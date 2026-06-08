@@ -1,5 +1,4 @@
-﻿using GamePlatform.Api.Application.DTOs;
-using GamePlatform.Api.Application.Interfaces;
+﻿using GamePlatform.Api.Application.Interfaces;
 using GamePlatform.Api.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,9 +38,12 @@ public class PlayerController : ControllerBase
 
 
     [HttpPost]
-    public IActionResult CreatePlayer(PlayerDto dto)
+    public IActionResult CreatePlayer(PlayerCreateRequest request)
     {
-        _playerService.AddPlayer(dto);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        _playerService.CreatePlayer(request);
         return Ok();
     }
 

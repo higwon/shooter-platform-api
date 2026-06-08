@@ -1,5 +1,4 @@
-﻿using GamePlatform.Api.Application.DTOs;
-using GamePlatform.Api.Domain.Entities;
+﻿using GamePlatform.Api.Domain.Entities;
 
 namespace GamePlatform.Api.Application.Interfaces;
 
@@ -9,7 +8,7 @@ public interface IPlayerService
 
     Player? GetPlayer(int id);
 
-    void AddPlayer(PlayerDto dto);
+    void CreatePlayer(PlayerCreateRequest request);
 
     Player? UpdatePlayer(int id, Player player);
 
