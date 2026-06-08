@@ -1,25 +1,23 @@
 ﻿using GamePlatform.Api.Models;
+using GamePlatform.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GamePlatform.Api.Controllers
+namespace GamePlatform.Api.Controllers;
+
+[ApiController]
+[Route("api/players")]
+public class PlayerController : ControllerBase
 {
-    [ApiController]
-    [Route("api/players")]
-    public class PlayerController : ControllerBase
+    private readonly IPlayerService _playerService;
+
+    public PlayerController(IPlayerService playerService)
     {
-        [HttpGet]
-        public IEnumerable<Player> GetPlayers()
-        {
-            return
-            [
-                new Player
-            {
-                Id = 1,
-                Name = "HyuckJin",
-                Level = 100,
-                CreatedAt = DateTime.UtcNow
-            }
-            ];
-        }
+        _playerService = playerService;
+    }
+
+    [HttpGet]
+    public IEnumerable<Player> GetPlayers()
+    {
+        return _playerService.GetPlayers();
     }
 }
