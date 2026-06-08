@@ -1,5 +1,6 @@
 ﻿using GamePlatform.Api.Data;
 using GamePlatform.Api.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GamePlatform.Api.Services;
 
@@ -12,6 +13,8 @@ public class PlayerService : IPlayerService
         _dbContext = dbContext;
     }
 
+
+
     public IEnumerable<Player> GetPlayers()
     {
         return _dbContext.Players.ToList();
@@ -20,5 +23,39 @@ public class PlayerService : IPlayerService
     public Player? GetPlayer(int id)
     {
         return _dbContext.Players.FirstOrDefault(x => x.Id == id);
+    }
+
+    public void AddPlayer(Player player)
+    {
+        _dbContext.Players.Add(player);
+        _dbContext.SaveChanges();
+    }
+
+    public Player? UpdatePlayer(int id, Player updatedPlayer)
+    {
+        var player = _dbContext.Players.FirstOrDefault(x => x.Id == id);
+
+        if (player == null)
+            return null;
+
+        player.Name = updatedPlayer.Name;
+        player.Level = updatedPlayer.Level;
+
+        _dbContext.SaveChanges();
+
+        return player;
+    }
+
+    public bool DeletePlayer(int id)
+    {
+        var player = _dbContext.Players.FirstOrDefault(x => x.Id == id);
+
+        if (player == null)
+            return false;
+
+        _dbContext.Players.Remove(player);
+        _dbContext.SaveChanges();
+
+        return true;
     }
 }

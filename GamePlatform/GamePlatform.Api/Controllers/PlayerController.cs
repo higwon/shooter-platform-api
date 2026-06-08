@@ -35,4 +35,38 @@ public class PlayerController : ControllerBase
 
         return Ok(player);
     }
+
+    [HttpPost]
+    public ActionResult<Player> CreatePlayer(Player player)
+    {
+        _playerService.AddPlayer(player);
+
+        return CreatedAtAction(
+            nameof(GetPlayer),
+            new { id = player.Id },
+            player
+        );
+    }
+
+    [HttpPut("{id}")]
+    public ActionResult<Player> UpdatePlayer(int id, Player updatedPlayer)
+    {
+        var result = _playerService.UpdatePlayer(id, updatedPlayer);
+
+        if (result == null)
+            return NotFound();
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeletePlayer(int id)
+    {
+        var result = _playerService.DeletePlayer(id);
+
+        if (!result)
+            return NotFound();
+
+        return NoContent();
+    }
 }
