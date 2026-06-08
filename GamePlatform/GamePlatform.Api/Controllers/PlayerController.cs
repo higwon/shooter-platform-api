@@ -1,5 +1,6 @@
-﻿using GamePlatform.Api.Models;
-using GamePlatform.Api.Services;
+﻿using GamePlatform.Api.Application.DTOs;
+using GamePlatform.Api.Application.Interfaces;
+using GamePlatform.Api.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GamePlatform.Api.Controllers;
@@ -36,16 +37,12 @@ public class PlayerController : ControllerBase
         return Ok(player);
     }
 
-    [HttpPost]
-    public ActionResult<Player> CreatePlayer(Player player)
-    {
-        _playerService.AddPlayer(player);
 
-        return CreatedAtAction(
-            nameof(GetPlayer),
-            new { id = player.Id },
-            player
-        );
+    [HttpPost]
+    public IActionResult CreatePlayer(PlayerDto dto)
+    {
+        _playerService.AddPlayer(dto);
+        return Ok();
     }
 
     [HttpPut("{id}")]

@@ -1,7 +1,7 @@
-﻿using GamePlatform.Api.Models;
+﻿using GamePlatform.Api.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace GamePlatform.Api.Data;
+namespace GamePlatform.Api.Infrastructure;
 
 public class GamePlatformDbContext : DbContext
 {

@@ -1,4 +1,4 @@
-﻿namespace GamePlatform.Api.Models
+﻿namespace GamePlatform.Api.Domain.Entities
 {
 
     public class Player

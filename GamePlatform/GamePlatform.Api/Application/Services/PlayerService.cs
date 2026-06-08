@@ -1,8 +1,10 @@
-﻿using GamePlatform.Api.Data;
-using GamePlatform.Api.Models;
+﻿using GamePlatform.Api.Application.DTOs;
+using GamePlatform.Api.Application.Interfaces;
+using GamePlatform.Api.Domain.Entities;
+using GamePlatform.Api.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GamePlatform.Api.Services;
+namespace GamePlatform.Api.Application.Services;
 
 public class PlayerService : IPlayerService
 {
@@ -25,8 +27,14 @@ public class PlayerService : IPlayerService
         return _dbContext.Players.FirstOrDefault(x => x.Id == id);
     }
 
-    public void AddPlayer(Player player)
+    public void AddPlayer(PlayerDto dto)
     {
+        var player = new Player
+        {
+            Name = dto.Name,
+            Level = dto.Level
+        };
+
         _dbContext.Players.Add(player);
         _dbContext.SaveChanges();
     }
