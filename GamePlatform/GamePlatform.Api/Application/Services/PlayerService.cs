@@ -1,4 +1,5 @@
-﻿using GamePlatform.Api.Application.Interfaces;
+﻿using Azure.Core;
+using GamePlatform.Api.Application.Interfaces;
 using GamePlatform.Api.Domain.Entities;
 using GamePlatform.Api.Infrastructure;
 
@@ -14,14 +15,31 @@ public class PlayerService : IPlayerService
     }
 
 
-    public IEnumerable<Player> GetPlayers()
+    public IEnumerable<PlayerResponse> GetPlayers()
     {
-        return _dbContext.Players.ToList();
+        return _dbContext.Players
+            .Select(x => new PlayerResponse
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Level = x.Level
+            })
+            .ToList();
     }
 
-    public Player? GetPlayer(int id)
+    public PlayerResponse? GetPlayer(int id)
     {
-        return _dbContext.Players.FirstOrDefault(x => x.Id == id);
+        var player = _dbContext.Players.FirstOrDefault(x => x.Id == id);
+
+        if (player == null)
+            return null;
+
+        return new PlayerResponse
+        {
+            Id = player.Id,
+            Name = player.Name,
+            Level = player.Level
+        };
     }
 
     public void CreatePlayer(PlayerCreateRequest request)
@@ -36,19 +54,24 @@ public class PlayerService : IPlayerService
         _dbContext.SaveChanges();
     }
 
-    public Player? UpdatePlayer(int id, Player updatedPlayer)
+    public PlayerResponse? UpdatePlayer(int id, PlayerUpdateRequest request)
     {
         var player = _dbContext.Players.FirstOrDefault(x => x.Id == id);
 
         if (player == null)
             return null;
 
-        player.Name = updatedPlayer.Name;
-        player.Level = updatedPlayer.Level;
+        player.Name = request.Name;
+        player.Level = request.Level;
 
         _dbContext.SaveChanges();
 
-        return player;
+        return new PlayerResponse
+        {
+            Id = player.Id,
+            Name = player.Name,
+            Level = player.Level
+        };
     }
 
     public bool DeletePlayer(int id)

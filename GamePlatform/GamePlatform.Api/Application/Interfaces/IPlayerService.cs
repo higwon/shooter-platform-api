@@ -4,13 +4,13 @@ namespace GamePlatform.Api.Application.Interfaces;
 
 public interface IPlayerService
 {
-    IEnumerable<Player> GetPlayers();
+    IEnumerable<PlayerResponse> GetPlayers();
 
-    Player? GetPlayer(int id);
+    PlayerResponse? GetPlayer(int id);
 
     void CreatePlayer(PlayerCreateRequest request);
 
-    Player? UpdatePlayer(int id, Player player);
+    PlayerResponse? UpdatePlayer(int id, PlayerUpdateRequest player);
 
     bool DeletePlayer(int id);
 }
