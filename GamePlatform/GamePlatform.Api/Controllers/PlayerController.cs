@@ -24,7 +24,7 @@ public class PlayerController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Player> GetPlayer(int id)
+    public ActionResult<PlayerResponse> GetPlayer(int id)
     {
         var player = _playerService.GetPlayer(id);
 
