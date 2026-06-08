@@ -16,8 +16,23 @@ public class PlayerController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Player> GetPlayers()
+    public ActionResult<IEnumerable<Player>> GetPlayers()
     {
-        return _playerService.GetPlayers();
+        var players = _playerService.GetPlayers();
+
+        return Ok(players);
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<Player> GetPlayer(int id)
+    {
+        var player = _playerService.GetPlayer(id);
+
+        if (player is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(player);
     }
 }

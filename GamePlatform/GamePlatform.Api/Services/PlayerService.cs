@@ -24,4 +24,9 @@ public class PlayerService : IPlayerService
             }
         ];
     }
+
+    public Player? GetPlayer(int id)
+    {
+        return GetPlayers().FirstOrDefault(x => x.Id == id);
+    }
 }

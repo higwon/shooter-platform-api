@@ -5,4 +5,6 @@ namespace GamePlatform.Api.Services;
 public interface IPlayerService
 {
     IEnumerable<Player> GetPlayers();
+
+    Player? GetPlayer(int id);
 }
