@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using GamePlatform.Api.Application.Common.CustomExceptions;
 using GamePlatform.Api.Application.Interfaces;
 using GamePlatform.Api.Domain.Entities;
 using GamePlatform.Api.Infrastructure;
@@ -27,12 +28,13 @@ public class PlayerService : IPlayerService
             .ToList();
     }
 
-    public PlayerResponse? GetPlayer(int id)
+    public PlayerResponse GetPlayer(int id)
     {
-        var player = _dbContext.Players.FirstOrDefault(x => x.Id == id);
+        var player = _dbContext.Players
+            .FirstOrDefault(x => x.Id == id);
 
-        if (player == null)
-            return null;
+        if (player is null)
+            throw new NotFoundException($"Player {id} not found");
 
         return new PlayerResponse
         {
@@ -54,12 +56,13 @@ public class PlayerService : IPlayerService
         _dbContext.SaveChanges();
     }
 
-    public PlayerResponse? UpdatePlayer(int id, PlayerUpdateRequest request)
+    public PlayerResponse UpdatePlayer(int id, PlayerUpdateRequest request)
     {
-        var player = _dbContext.Players.FirstOrDefault(x => x.Id == id);
+        var player = _dbContext.Players
+            .FirstOrDefault(x => x.Id == id);
 
-        if (player == null)
-            return null;
+        if (player is null)
+            throw new NotFoundException($"Player {id} not found");
 
         player.Name = request.Name;
         player.Level = request.Level;
@@ -74,16 +77,15 @@ public class PlayerService : IPlayerService
         };
     }
 
-    public bool DeletePlayer(int id)
+    public void DeletePlayer(int id)
     {
-        var player = _dbContext.Players.FirstOrDefault(x => x.Id == id);
+        var player = _dbContext.Players
+            .FirstOrDefault(x => x.Id == id);
 
-        if (player == null)
-            return false;
+        if (player is null)
+            throw new NotFoundException($"Player {id} not found");
 
         _dbContext.Players.Remove(player);
         _dbContext.SaveChanges();
-
-        return true;
     }
 }

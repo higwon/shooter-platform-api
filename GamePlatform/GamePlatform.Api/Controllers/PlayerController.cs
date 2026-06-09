@@ -1,4 +1,5 @@
 ﻿using GamePlatform.Api.Application.Common;
+using GamePlatform.Api.Application.Common.CustomExceptions;
 using GamePlatform.Api.Application.Interfaces;
 using GamePlatform.Api.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ public class PlayerController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<PlayerResponse>> GetPlayers()
+    public ActionResult<ApiResult<IEnumerable<PlayerResponse>>> GetPlayers()
     {
         var players = _playerService.GetPlayers();
 
@@ -29,18 +30,15 @@ public class PlayerController : ControllerBase
     {
         var player = _playerService.GetPlayer(id);
 
-        if (player is null)
-            return Ok(ApiResult<PlayerResponse>.Fail("Player not found"));
-
         return Ok(ApiResult<PlayerResponse>.Ok(player));
     }
 
 
     [HttpPost]
-    public IActionResult CreatePlayer(PlayerCreateRequest request)
+    public ActionResult<ApiResult<string>> CreatePlayer(PlayerCreateRequest request)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ApiResult<string>.Fail("Invalid request"));
+            throw new BusinessException("Invalid request");
 
         _playerService.CreatePlayer(request);
 
@@ -48,23 +46,17 @@ public class PlayerController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public ActionResult<Player> UpdatePlayer(int id, PlayerUpdateRequest updatedPlayer)
+    public ActionResult<ApiResult<PlayerResponse>> UpdatePlayer(int id, PlayerUpdateRequest request)
     {
-        var result = _playerService.UpdatePlayer(id, updatedPlayer);
-
-        if (result == null)
-            return Ok(ApiResult<PlayerResponse>.Fail("Not found"));
+        var result = _playerService.UpdatePlayer(id, request);
 
         return Ok(ApiResult<PlayerResponse>.Ok(result));
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeletePlayer(int id)
+    public ActionResult<ApiResult<string>> DeletePlayer(int id)
     {
-        var result = _playerService.DeletePlayer(id);
-
-        if (!result)
-            return Ok(ApiResult<string>.Fail("Not found"));
+        _playerService.DeletePlayer(id);
 
         return Ok(ApiResult<string>.Ok("Deleted"));
     }

@@ -12,5 +12,5 @@ public interface IPlayerService
 
     PlayerResponse? UpdatePlayer(int id, PlayerUpdateRequest player);
 
-    bool DeletePlayer(int id);
+    void DeletePlayer(int id);
 }
