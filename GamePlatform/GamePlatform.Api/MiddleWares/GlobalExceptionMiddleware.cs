@@ -1,4 +1,6 @@
-﻿using GamePlatform.Api.Application.Common;
+﻿using System.Text.Json;
+using FluentValidation;
+using GamePlatform.Api.Application.Common;
 using GamePlatform.Api.Application.Common.CustomExceptions;
 
 namespace GamePlatform.Api.MiddleWares
@@ -8,7 +10,9 @@ namespace GamePlatform.Api.MiddleWares
         private readonly RequestDelegate _next;
         private readonly ILogger<GlobalExceptionMiddleware> _logger;
 
-        public GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger)
+        public GlobalExceptionMiddleware(
+            RequestDelegate next,
+            ILogger<GlobalExceptionMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -29,28 +33,60 @@ namespace GamePlatform.Api.MiddleWares
 
         private static async Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            var (statusCode, message) = MapException(ex);
+            var (statusCode, message, errorCode, errors) = MapException(ex);
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
 
-            var response = ApiResult<string>.Fail(message);
+            var response = new ApiResult<string>
+            {
+                Success = false,
+                Message = message,
+                ErrorCode = errorCode,
+                Errors = errors
+            };
 
-            await context.Response.WriteAsync(
-                System.Text.Json.JsonSerializer.Serialize(response));
+            await context.Response.WriteAsJsonAsync(response);
         }
 
-        private static (int statusCode, string message) MapException(Exception ex)
+        private static (int statusCode, string message, string? errorCode, object? errors)
+            MapException(Exception ex)
         {
             return ex switch
             {
-                NotFoundException => (StatusCodes.Status404NotFound, ex.Message),
+                NotFoundException => (
+                    StatusCodes.Status404NotFound,
+                    ex.Message,
+                    "NOT_FOUND",
+                    null
+                ),
 
-                BusinessException => (StatusCodes.Status400BadRequest, ex.Message),
+                BusinessException => (
+                    StatusCodes.Status400BadRequest,
+                    ex.Message,
+                    "BUSINESS_ERROR",
+                    null
+                ),
 
-                _ => (StatusCodes.Status500InternalServerError, "Internal Server Error")
+                ValidationException ve => (
+                    StatusCodes.Status400BadRequest,
+                    "Validation failed",
+                    "VALIDATION_ERROR",
+                    ve.Errors
+                        .GroupBy(x => x.PropertyName)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Select(x => x.ErrorMessage).ToArray()
+                        )
+                ),
+
+                _ => (
+                    StatusCodes.Status500InternalServerError,
+                    "Internal Server Error",
+                    "SERVER_ERROR",
+                    null
+                )
             };
         }
-
     }
 }

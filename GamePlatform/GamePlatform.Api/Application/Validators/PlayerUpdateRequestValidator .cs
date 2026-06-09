@@ -1,17 +1,20 @@
 ﻿using FluentValidation;
 using GamePlatform.Api.Application.DTOs;
 
-public class PlayerUpdateRequestValidator : AbstractValidator<PlayerUpdateRequest>
+namespace GamePlatform.Api.Application.Validators
 {
-    public PlayerUpdateRequestValidator()
+    public class PlayerUpdateRequestValidator : AbstractValidator<PlayerUpdateRequest>
     {
-        RuleFor(x => x.Name)
-            .NotEmpty()
-            .WithMessage("Name is required")
-            .MaximumLength(50);
+        public PlayerUpdateRequestValidator()
+        {
+            RuleFor(x => x.Name)
+                .NotEmpty()
+                .WithMessage("Name is required")
+                .MaximumLength(50);
 
-        RuleFor(x => x.Level)
-            .GreaterThanOrEqualTo(1)
-            .LessThanOrEqualTo(999);
+            RuleFor(x => x.Level)
+                .GreaterThanOrEqualTo(1)
+                .LessThanOrEqualTo(999);
+        }
     }
 }

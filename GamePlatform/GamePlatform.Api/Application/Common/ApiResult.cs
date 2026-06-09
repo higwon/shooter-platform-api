@@ -6,6 +6,7 @@
         public T? Data { get; init; }
         public string? Message { get; init; }
         public string? ErrorCode { get; init; }
+        public object? Errors { get; init; }
 
         public static ApiResult<T> Ok(T data, string? message = null)
         {
@@ -14,16 +15,6 @@
                 Success = true,
                 Data = data,
                 Message = message
-            };
-        }
-
-        public static ApiResult<T> Fail(string message, string? errorCode = null)
-        {
-            return new ApiResult<T>
-            {
-                Success = false,
-                Message = message,
-                ErrorCode = errorCode
             };
         }
     }
