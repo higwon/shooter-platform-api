@@ -1,4 +1,5 @@
-﻿using GamePlatform.Api.Application.Features.Auth.Interfaces;
+﻿using GamePlatform.Api.Application.Features.Auth.DTOs;
+using GamePlatform.Api.Application.Features.Auth.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using LoginRequest = GamePlatform.Api.Application.Features.Auth.DTOs.LoginRequest;
 
@@ -24,6 +25,17 @@ namespace GamePlatform.Api.Controllers
                 return Unauthorized();
 
             return Ok(token);
+        }
+
+        [HttpPost("register")]
+        public IActionResult Register(RegisterRequest req)
+        {
+            var result = _authService.Register(req.Username, req.Password);
+
+            if (!result)
+                return BadRequest("User already exists");
+
+            return Ok();
         }
     }
 }

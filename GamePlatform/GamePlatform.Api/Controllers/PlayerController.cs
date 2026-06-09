@@ -1,11 +1,12 @@
 ﻿using GamePlatform.Api.Application.Common;
-using GamePlatform.Api.Application.Common.CustomExceptions;
 using GamePlatform.Api.Application.Features.Players.DTOs;
 using GamePlatform.Api.Application.Features.Players.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GamePlatform.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/players")]
     public class PlayerController : ControllerBase
@@ -17,6 +18,7 @@ namespace GamePlatform.Api.Controllers
             _playerService = playerService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult<ApiResult<IEnumerable<PlayerResponse>>> GetPlayers()
         {
