@@ -4,7 +4,7 @@ namespace GamePlatform.Api.Application.Interfaces
 {
     public interface IPlayerService
     {
-        IEnumerable<PlayerResponse> GetPlayers();
+        IEnumerable<PlayerResponse> GetAllPlayers();
 
         PlayerResponse? GetPlayer(int id);
 

@@ -1,6 +1,7 @@
 ﻿using GamePlatform.Api.Application.Common;
 using GamePlatform.Api.Application.Common.CustomExceptions;
 using GamePlatform.Api.Application.Common.DTOs;
+using GamePlatform.Api.Application.DTOs;
 using GamePlatform.Api.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +21,7 @@ namespace GamePlatform.Api.Controllers
         [HttpGet]
         public ActionResult<ApiResult<IEnumerable<PlayerResponse>>> GetPlayers()
         {
-            var players = _playerService.GetPlayers();
+            var players = _playerService.GetAllPlayers();
 
             return Ok(ApiResult<IEnumerable<PlayerResponse>>.Ok(players));
         }
