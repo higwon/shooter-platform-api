@@ -1,16 +1,17 @@
-﻿using GamePlatform.Api.Domain.Entities;
+﻿using GamePlatform.Api.Application.DTOs;
 
-namespace GamePlatform.Api.Application.Interfaces;
-
-public interface IPlayerService
+namespace GamePlatform.Api.Application.Interfaces
 {
-    IEnumerable<PlayerResponse> GetPlayers();
+    public interface IPlayerService
+    {
+        IEnumerable<PlayerResponse> GetPlayers();
 
-    PlayerResponse? GetPlayer(int id);
+        PlayerResponse? GetPlayer(int id);
 
-    void CreatePlayer(PlayerCreateRequest request);
+        void CreatePlayer(PlayerCreateRequest request);
 
-    PlayerResponse? UpdatePlayer(int id, PlayerUpdateRequest player);
+        PlayerResponse? UpdatePlayer(int id, PlayerUpdateRequest player);
 
-    void DeletePlayer(int id);
+        void DeletePlayer(int id);
+    }
 }

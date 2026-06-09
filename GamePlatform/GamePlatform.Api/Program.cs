@@ -1,6 +1,7 @@
 using GamePlatform.Api.Application.Interfaces;
 using GamePlatform.Api.Application.Services;
 using GamePlatform.Api.Infrastructure;
+using GamePlatform.Api.MiddleWares;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

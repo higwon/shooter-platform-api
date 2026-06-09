@@ -1,91 +1,93 @@
-﻿using Azure.Core;
-using GamePlatform.Api.Application.Common.CustomExceptions;
+﻿using GamePlatform.Api.Application.Common.CustomExceptions;
+using GamePlatform.Api.Application.DTOs;
 using GamePlatform.Api.Application.Interfaces;
 using GamePlatform.Api.Domain.Entities;
 using GamePlatform.Api.Infrastructure;
 
-namespace GamePlatform.Api.Application.Services;
-
-public class PlayerService : IPlayerService
+namespace GamePlatform.Api.Application.Services
 {
-    private readonly GamePlatformDbContext _dbContext;
-
-    public PlayerService(GamePlatformDbContext dbContext)
+    public class PlayerService : IPlayerService
     {
-        _dbContext = dbContext;
-    }
+        private readonly GamePlatformDbContext _dbContext;
+
+        public PlayerService(GamePlatformDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
 
-    public IEnumerable<PlayerResponse> GetPlayers()
-    {
-        return _dbContext.Players
-            .Select(x => new PlayerResponse
+        public IEnumerable<PlayerResponse> GetPlayers()
+        {
+            return _dbContext.Players
+                .Select(x => new PlayerResponse
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Level = x.Level
+                })
+                .ToList();
+        }
+
+        public PlayerResponse GetPlayer(int id)
+        {
+            var player = _dbContext.Players
+                .FirstOrDefault(x => x.Id == id);
+
+            if (player is null)
+                throw new NotFoundException($"Player {id} not found");
+
+            return new PlayerResponse
             {
-                Id = x.Id,
-                Name = x.Name,
-                Level = x.Level
-            })
-            .ToList();
-    }
+                Id = player.Id,
+                Name = player.Name,
+                Level = player.Level
+            };
+        }
 
-    public PlayerResponse GetPlayer(int id)
-    {
-        var player = _dbContext.Players
-            .FirstOrDefault(x => x.Id == id);
-
-        if (player is null)
-            throw new NotFoundException($"Player {id} not found");
-
-        return new PlayerResponse
+        public void CreatePlayer(PlayerCreateRequest request)
         {
-            Id = player.Id,
-            Name = player.Name,
-            Level = player.Level
-        };
-    }
+            var player = new Player
+            {
+                Name = request.Name,
+                Level = request.Level
+            };
 
-    public void CreatePlayer(PlayerCreateRequest request)
-    {
-        var player = new Player
+            _dbContext.Players.Add(player);
+            _dbContext.SaveChanges();
+        }
+
+        public PlayerResponse UpdatePlayer(int id, PlayerUpdateRequest request)
         {
-            Name = request.Name,
-            Level = request.Level
-        };
+            var player = _dbContext.Players
+                .FirstOrDefault(x => x.Id == id);
 
-        _dbContext.Players.Add(player);
-        _dbContext.SaveChanges();
-    }
+            if (player is null)
+                throw new NotFoundException($"Player {id} not found");
 
-    public PlayerResponse UpdatePlayer(int id, PlayerUpdateRequest request)
-    {
-        var player = _dbContext.Players
-            .FirstOrDefault(x => x.Id == id);
+            player.Name = request.Name;
+            player.Level = request.Level;
 
-        if (player is null)
-            throw new NotFoundException($"Player {id} not found");
+            _dbContext.SaveChanges();
 
-        player.Name = request.Name;
-        player.Level = request.Level;
+            return new PlayerResponse
+            {
+                Id = player.Id,
+                Name = player.Name,
+                Level = player.Level
+            };
+        }
 
-        _dbContext.SaveChanges();
-
-        return new PlayerResponse
+        public void DeletePlayer(int id)
         {
-            Id = player.Id,
-            Name = player.Name,
-            Level = player.Level
-        };
-    }
+            var player = _dbContext.Players
+                .FirstOrDefault(x => x.Id == id);
 
-    public void DeletePlayer(int id)
-    {
-        var player = _dbContext.Players
-            .FirstOrDefault(x => x.Id == id);
+            if (player is null)
+                throw new NotFoundException($"Player {id} not found");
 
-        if (player is null)
-            throw new NotFoundException($"Player {id} not found");
-
-        _dbContext.Players.Remove(player);
-        _dbContext.SaveChanges();
+            _dbContext.Players.Remove(player);
+            _dbContext.SaveChanges();
+        }
     }
 }
+
