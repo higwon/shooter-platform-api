@@ -45,9 +45,6 @@ namespace GamePlatform.Api.Controllers
         [HttpPost]
         public ActionResult<ApiResult<string>> CreatePlayer(PlayerCreateRequest request)
         {
-            if (!ModelState.IsValid)
-                throw new BusinessException("Invalid request");
-
             _playerService.CreatePlayer(request);
 
             return Ok(ApiResult<string>.Ok("Created"));
