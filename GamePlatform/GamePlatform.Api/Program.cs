@@ -11,30 +11,86 @@ using GamePlatform.Api.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// ========================
+// Controllers
+// ========================
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter()
+        );
+    });
 
+// ========================
+// Swagger + JWT Support
+// ========================
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter: Bearer {your token}"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+// ========================
+// JWT Settings
+// ========================
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
 
+// ========================
+// DI
+// ========================
 builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 
+// ========================
+// DB
+// ========================
 builder.Services.AddDbContext<GamePlatformDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// ========================
+// FluentValidation
+// ========================
 builder.Services
     .AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters();
 
 builder.Services.AddValidatorsFromAssemblyContaining<PlayerQueryRequestValidator>();
 
+// ========================
+// JWT Authentication
+// ========================
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
@@ -50,17 +106,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidIssuer = settings.Issuer,
         ValidAudience = settings.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(settings.SecretKey))
+            Encoding.UTF8.GetBytes(settings.SecretKey)),
+
+        ClockSkew = TimeSpan.Zero
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine("JWT FAILED: " + context.Exception.Message);
+            return Task.CompletedTask;
+        },
+
+        OnChallenge = context =>
+        {
+            Console.WriteLine("JWT CHALLENGE TRIGGERED");
+            return Task.CompletedTask;
+        }
     };
 });
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(
-            new System.Text.Json.Serialization.JsonStringEnumConverter()
-        );
-    });
 
 var app = builder.Build();
 
