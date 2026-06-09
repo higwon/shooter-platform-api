@@ -6,6 +6,8 @@ namespace GamePlatform.Api.Application.Interfaces
     {
         IEnumerable<PlayerResponse> GetAllPlayers();
 
+        PagedResult<PlayerResponse> GetPlayers(PlayerQueryRequest request);
+
         PlayerResponse? GetPlayer(int id);
 
         void CreatePlayer(PlayerCreateRequest request);

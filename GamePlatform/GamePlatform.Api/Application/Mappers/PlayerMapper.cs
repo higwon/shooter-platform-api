@@ -14,5 +14,20 @@ namespace GamePlatform.Api.Application.Mappers
                 Level = entity.Level
             };
         }
+
+        public static Player ToEntity(PlayerCreateRequest request)
+        {
+            return new Player
+            {
+                Name = request.Name,
+                Level = request.Level
+            };
+        }
+
+        public static void UpdateEntity(Player entity, PlayerUpdateRequest request)
+        {
+            entity.Name = request.Name;
+            entity.Level = request.Level;
+        }
     }
 }

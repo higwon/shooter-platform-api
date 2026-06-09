@@ -1,6 +1,5 @@
 ﻿using GamePlatform.Api.Application.Common;
 using GamePlatform.Api.Application.Common.CustomExceptions;
-using GamePlatform.Api.Application.Common.DTOs;
 using GamePlatform.Api.Application.DTOs;
 using GamePlatform.Api.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +23,14 @@ namespace GamePlatform.Api.Controllers
             var players = _playerService.GetAllPlayers();
 
             return Ok(ApiResult<IEnumerable<PlayerResponse>>.Ok(players));
+        }
+
+        [HttpGet("search")]
+        public ActionResult<ApiResult<PagedResult<PlayerResponse>>> GetPlayers([FromQuery] PlayerQueryRequest request)
+        {
+            var result = _playerService.GetPlayers(request);
+
+            return Ok(ApiResult<PagedResult<PlayerResponse>>.Ok(result));
         }
 
         [HttpGet("{id}")]
