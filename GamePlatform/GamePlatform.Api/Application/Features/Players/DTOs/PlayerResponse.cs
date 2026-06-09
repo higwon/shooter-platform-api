@@ -1,4 +1,4 @@
-﻿namespace GamePlatform.Api.Application.DTOs
+﻿namespace GamePlatform.Api.Application.Features.Players.DTOs
 {
     public class PlayerResponse
     {

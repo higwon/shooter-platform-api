@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using GamePlatform.Api.Application.DTOs;
+using GamePlatform.Api.Application.Features.Players.DTOs;
 
-namespace GamePlatform.Api.Application.Validators
+namespace GamePlatform.Api.Application.Features.Players.Validators
 {
     public class PlayerCreateRequestValidator : AbstractValidator<PlayerCreateRequest>
     {

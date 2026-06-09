@@ -1,12 +1,12 @@
 ﻿using GamePlatform.Api.Application.Common.CustomExceptions;
-using GamePlatform.Api.Application.Common.Enum;
-using GamePlatform.Api.Application.DTOs;
-using GamePlatform.Api.Application.Interfaces;
-using GamePlatform.Api.Application.Mappers;
+using GamePlatform.Api.Application.Features.Players.DTOs;
+using GamePlatform.Api.Application.Features.Players.Interfaces;
+using GamePlatform.Api.Application.Features.Players.Mappers;
 using GamePlatform.Api.Domain.Entities;
+using GamePlatform.Api.Domain.Enums;
 using GamePlatform.Api.Infrastructure;
 
-namespace GamePlatform.Api.Application.Services
+namespace GamePlatform.Api.Application.Features.Players.Services
 {
     public class PlayerService : IPlayerService
     {

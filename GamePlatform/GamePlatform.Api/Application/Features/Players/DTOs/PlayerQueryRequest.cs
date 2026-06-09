@@ -1,6 +1,6 @@
-﻿using GamePlatform.Api.Application.Common.Enum;
+﻿using GamePlatform.Api.Domain.Enums;
 
-namespace GamePlatform.Api.Application.DTOs
+namespace GamePlatform.Api.Application.Features.Players.DTOs
 {
     public class PlayerQueryRequest
     {

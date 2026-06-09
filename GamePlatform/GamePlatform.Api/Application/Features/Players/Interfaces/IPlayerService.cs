@@ -1,6 +1,6 @@
-﻿using GamePlatform.Api.Application.DTOs;
+﻿using GamePlatform.Api.Application.Features.Players.DTOs;
 
-namespace GamePlatform.Api.Application.Interfaces
+namespace GamePlatform.Api.Application.Features.Players.Interfaces
 {
     public interface IPlayerService
     {

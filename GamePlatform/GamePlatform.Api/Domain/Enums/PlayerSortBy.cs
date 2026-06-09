@@ -1,4 +1,4 @@
-﻿namespace GamePlatform.Api.Application.Common.Enum
+﻿namespace GamePlatform.Api.Domain.Enums
 {
     public enum PlayerSortBy
     {

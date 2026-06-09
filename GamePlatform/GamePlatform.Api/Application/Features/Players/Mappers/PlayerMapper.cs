@@ -1,7 +1,7 @@
-﻿using GamePlatform.Api.Application.DTOs;
+﻿using GamePlatform.Api.Application.Features.Players.DTOs;
 using GamePlatform.Api.Domain.Entities;
 
-namespace GamePlatform.Api.Application.Mappers
+namespace GamePlatform.Api.Application.Features.Players.Mappers
 {
     public static class PlayerMapper
     {
