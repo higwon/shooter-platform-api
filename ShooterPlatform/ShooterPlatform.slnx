@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ShooterPlatform.Api/ShooterPlatform.Api.csproj" />
+  <Project Path="ShooterPlatform.Tests/ShooterPlatform.Tests.csproj" />
+</Solution>

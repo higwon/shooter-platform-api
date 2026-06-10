@@ -1,0 +1,6 @@
+@ShooterPlatform.Api_HostAddress = https://localhost:7034
+
+GET {{ShooterPlatform.Api_HostAddress}}/api/players
+Accept: application/json
+
+###

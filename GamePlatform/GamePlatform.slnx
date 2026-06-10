@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="GamePlatform.Api/GamePlatform.Api.csproj" />
-  <Project Path="GamePlatform.Tests/GamePlatform.Tests.csproj" Id="e6de77a9-2b2a-4d43-a36e-511cb7835be0" />
-</Solution>

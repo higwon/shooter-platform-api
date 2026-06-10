@@ -1,0 +1,72 @@
+﻿using ShooterPlatform.Api.Application.Common;
+using ShooterPlatform.Api.Application.Features.Players.DTOs;
+using ShooterPlatform.Api.Application.Features.Players.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ShooterPlatform.Api.Controllers
+{
+    [Authorize]
+    [ApiController]
+    [Route("api/players")]
+    public class PlayerController : ControllerBase
+    {
+        private readonly IPlayerService _playerService;
+
+        public PlayerController(IPlayerService playerService)
+        {
+            _playerService = playerService;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult<ApiResult<IEnumerable<PlayerResponse>>> GetPlayers()
+        {
+            var players = _playerService.GetAllPlayers();
+
+            return Ok(ApiResult<IEnumerable<PlayerResponse>>.Ok(players));
+        }
+
+        [HttpGet("search")]
+        public ActionResult<ApiResult<PagedResult<PlayerResponse>>> GetPlayers([FromQuery] PlayerQueryRequest request)
+        {
+            var result = _playerService.GetPlayers(request);
+
+            return Ok(ApiResult<PagedResult<PlayerResponse>>.Ok(result));
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<ApiResult<PlayerResponse>> GetPlayer(int id)
+        {
+            var player = _playerService.GetPlayer(id);
+
+            return Ok(ApiResult<PlayerResponse>.Ok(player));
+        }
+
+
+        [HttpPost]
+        public ActionResult<ApiResult<string>> CreatePlayer(PlayerCreateRequest request)
+        {
+            _playerService.CreatePlayer(request);
+
+            return Ok(ApiResult<string>.Ok("Created"));
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult<ApiResult<PlayerResponse>> UpdatePlayer(int id, PlayerUpdateRequest request)
+        {
+            var result = _playerService.UpdatePlayer(id, request);
+
+            return Ok(ApiResult<PlayerResponse>.Ok(result));
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult<ApiResult<string>> DeletePlayer(int id)
+        {
+            _playerService.DeletePlayer(id);
+
+            return Ok(ApiResult<string>.Ok("Deleted"));
+        }
+    }
+}
+
