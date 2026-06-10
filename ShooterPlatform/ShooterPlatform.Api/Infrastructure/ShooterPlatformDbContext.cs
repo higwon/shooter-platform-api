@@ -14,6 +14,8 @@ namespace ShooterPlatform.Api.Infrastructure
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<FavoritePlayer> FavoritePlayers => Set<FavoritePlayer>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
