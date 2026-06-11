@@ -3,6 +3,8 @@ using ShooterPlatform.Api.Application.Features.Overwatch.Interfaces;
 using ShooterPlatform.Api.Domain.Entities;
 using ShooterPlatform.Api.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using ShooterPlatform.Api.Application.Features.Favorite.DTOs;
+using ShooterPlatform.Api.Application.Features.Overwatch.DTOs;
 
 namespace ShooterPlatform.Api.Application.Features.Favorite.Services
 {
@@ -45,13 +47,49 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Services
             return favoritePlayer;
         }
 
-        public async Task<List<FavoritePlayer>> GetFavoritesAsync(int userId)
+        public async Task<List<FavoriteResponse>> GetFavoritesAsync(int userId)
         {
-            return await _dbContext.FavoritePlayers
+            var favorites = await _dbContext.FavoritePlayers
                 .Where(x => x.UserId == userId)
                 .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
+
+            var result = new List<FavoriteResponse>();
+
+            foreach (var favorite in favorites)
+            {
+                var profile = await _overwatchService
+                    .GetProfileAsync(favorite.BattleTag);
+
+                var pc = profile.Summary.Competitive?.Pc;
+
+                result.Add(new FavoriteResponse
+                {
+                    Id = favorite.Id,
+                    BattleTag = favorite.BattleTag,
+                    Username = profile.Summary.Username,
+                    Avatar = profile.Summary.Avatar,
+
+                    TankRank = ToRankString(pc?.Tank),
+                    DamageRank = ToRankString(pc?.Damage),
+                    SupportRank = ToRankString(pc?.Support)
+                });
+            }
+
+            return result;
         }
+
+        private static string? ToRankString(Role? role)
+        {
+            if (role == null)
+                return null;
+
+            if (string.IsNullOrWhiteSpace(role.Division))
+                return null;
+
+            return $"{role.Division} {role.Tier}";
+        }
+
 
         public async Task DeleteFavoriteAsync(int userId, int favoriteId)
         {
