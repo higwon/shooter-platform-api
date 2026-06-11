@@ -10,6 +10,7 @@ using ShooterPlatform.Api.Application.Features.Favorite.Interfaces;
 using ShooterPlatform.Api.Application.Features.Favorite.Services;
 using ShooterPlatform.Api.Application.Features.Overwatch.Interfaces;
 using ShooterPlatform.Api.Application.Features.Overwatch.Providers;
+using ShooterPlatform.Api.Application.Features.Overwatch.Services;
 using ShooterPlatform.Api.Application.Features.Players.Interfaces;
 using ShooterPlatform.Api.Application.Features.Players.Services;
 using ShooterPlatform.Api.Application.Features.Players.Validators;
@@ -76,6 +77,7 @@ builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+builder.Services.AddScoped<IOverwatchService, OverwatchService>();
 builder.Services.AddHttpClient<IOverwatchProfileProvider, OverwatchProfileProvider>();
 
 // ========================

@@ -45,6 +45,19 @@ namespace ShooterPlatform.Api.Controllers
 
             return Ok(favorites);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!int.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            await _favoriteService.DeleteFavoriteAsync(userId, id);
+
+            return NoContent();
+        }
     }
 }
 

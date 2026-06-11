@@ -9,14 +9,14 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Services
     public class FavoriteService : IFavoriteService
     {
         private readonly ShooterPlatformDbContext _dbContext;
-        private readonly IOverwatchProfileProvider _profileProvider;
+        private readonly IOverwatchService _overwatchService;
 
         public FavoriteService(
             ShooterPlatformDbContext dbContext,
-            IOverwatchProfileProvider profileProvider)
+            IOverwatchService overwatchService)
         {
             _dbContext = dbContext;
-            _profileProvider = profileProvider;
+            _overwatchService = overwatchService;
         }
 
         public async Task<FavoritePlayer> AddFavoriteAsync(int userId, string battleTag)
@@ -28,7 +28,7 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Services
             if (exists)
                 throw new InvalidOperationException("Already registered.");
 
-            var profile = await _profileProvider.FetchAsync(battleTag);
+            var profile = await _overwatchService.GetProfileAsync(battleTag);
 
             var favoritePlayer = new FavoritePlayer
             {
@@ -51,6 +51,21 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Services
                 .Where(x => x.UserId == userId)
                 .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
+        }
+
+        public async Task DeleteFavoriteAsync(int userId, int favoriteId)
+        {
+            var favorite = await _dbContext.FavoritePlayers
+                .FirstOrDefaultAsync(x =>
+                    x.Id == favoriteId &&
+                    x.UserId == userId);
+
+            if (favorite == null)
+                throw new KeyNotFoundException("Favorite not found.");
+
+            _dbContext.FavoritePlayers.Remove(favorite);
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
