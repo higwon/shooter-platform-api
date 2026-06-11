@@ -1,4 +1,5 @@
-﻿using ShooterPlatform.Api.Domain.Entities;
+﻿using ShooterPlatform.Api.Application.Features.Favorite.DTOs;
+using ShooterPlatform.Api.Domain.Entities;
 
 namespace ShooterPlatform.Api.Application.Features.Favorite.Interfaces
 {
@@ -6,7 +7,7 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Interfaces
     {
         Task<FavoritePlayer> AddFavoriteAsync(int userId, string battleTag);
 
-        Task<List<FavoritePlayer>> GetFavoritesAsync(int userId);
+        Task<List<FavoriteResponse>> GetFavoritesAsync(int userId);
 
         Task DeleteFavoriteAsync(int userId, int favoriteId);
     }
