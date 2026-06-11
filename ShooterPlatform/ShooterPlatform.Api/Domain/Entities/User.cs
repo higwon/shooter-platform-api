@@ -1,6 +1,4 @@
-﻿using ShooterPlatform.Api.Domain.Enums;
-
-namespace ShooterPlatform.Api.Domain.Entities
+﻿namespace ShooterPlatform.Api.Domain.Entities
 {
     public class User
     {

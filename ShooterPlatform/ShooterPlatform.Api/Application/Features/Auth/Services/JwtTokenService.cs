@@ -23,7 +23,7 @@ namespace ShooterPlatform.Api.Application.Features.Auth.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Email),
-        };
+            };
 
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_settings.SecretKey));

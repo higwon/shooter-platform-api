@@ -1,17 +1,21 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using ShooterPlatform.Api.Application.Features.Auth.Interfaces;
 using ShooterPlatform.Api.Application.Features.Auth.Services;
+using ShooterPlatform.Api.Application.Features.Favorite.Interfaces;
+using ShooterPlatform.Api.Application.Features.Favorite.Services;
+using ShooterPlatform.Api.Application.Features.Overwatch.Interfaces;
+using ShooterPlatform.Api.Application.Features.Overwatch.Providers;
 using ShooterPlatform.Api.Application.Features.Players.Interfaces;
 using ShooterPlatform.Api.Application.Features.Players.Services;
 using ShooterPlatform.Api.Application.Features.Players.Validators;
 using ShooterPlatform.Api.Infrastructure;
 using ShooterPlatform.Api.MiddleWares;
 using ShooterPlatform.Api.Options;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -71,6 +75,8 @@ builder.Services.Configure<JwtSettings>(
 builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+builder.Services.AddHttpClient<IOverwatchProfileProvider, OverwatchProfileProvider>();
 
 // ========================
 // DB

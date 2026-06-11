@@ -52,7 +52,7 @@ namespace ShooterPlatform.Api.Migrations
                     b.HasIndex("UserId", "BattleTag")
                         .IsUnique();
 
-                    b.ToTable("FavoritePlayer");
+                    b.ToTable("FavoritePlayers");
                 });
 
             modelBuilder.Entity("ShooterPlatform.Api.Domain.Entities.Player", b =>
