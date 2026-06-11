@@ -2,8 +2,8 @@
 
 namespace ShooterPlatform.Api.Application.Features.Overwatch.Interfaces
 {
-    public interface IOverwatchProfileProvider
+    public interface IOverwatchService
     {
-        Task<OverwatchProfileResponse> FetchAsync(string battleTag);
+        Task<OverwatchProfileResponse> GetProfileAsync(string battleTag);
     }
 }
