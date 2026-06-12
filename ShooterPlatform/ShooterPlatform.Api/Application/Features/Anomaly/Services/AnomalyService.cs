@@ -2,7 +2,7 @@
 using ShooterPlatform.Api.Application.Features.Anomaly.Models;
 using ShooterPlatform.Api.Application.Features.Overwatch.Interfaces;
 
-namespace ShooterPlatform.Api.Application.Features.Anomaly.Serivces
+namespace ShooterPlatform.Api.Application.Features.Anomaly.Services
 {
     public class AnomalyService : IAnomalyService
     {
