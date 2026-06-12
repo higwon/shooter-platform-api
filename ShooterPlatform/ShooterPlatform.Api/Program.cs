@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ShooterPlatform.Api.Application.Features.Anomaly.Interfaces;
+using ShooterPlatform.Api.Application.Features.Anomaly.Rules;
+using ShooterPlatform.Api.Application.Features.Anomaly.Serivces;
 using ShooterPlatform.Api.Application.Features.Auth.Interfaces;
 using ShooterPlatform.Api.Application.Features.Auth.Services;
 using ShooterPlatform.Api.Application.Features.Favorite.Interfaces;
@@ -78,6 +81,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<IOverwatchService, OverwatchService>();
+builder.Services.AddScoped<IAnomalyService, AnomalyService>();
+builder.Services.AddScoped<IAnomalyRule, WinRateRule>();
+
 builder.Services.AddHttpClient<IOverwatchProfileProvider, OverwatchProfileProvider>();
 
 // ========================
