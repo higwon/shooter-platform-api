@@ -1,10 +1,10 @@
-﻿using ShooterPlatform.Api.Domain.Entities;
-using ShooterPlatform.Api.Options;
+﻿using ShooterPlatform.Api.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ShooterPlatform.Api.Application.Features.Auth.Models;
 
 namespace ShooterPlatform.Api.Application.Features.Auth.Services
 {

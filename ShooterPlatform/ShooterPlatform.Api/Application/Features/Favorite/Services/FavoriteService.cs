@@ -1,10 +1,10 @@
 ﻿using ShooterPlatform.Api.Application.Features.Favorite.Interfaces;
 using ShooterPlatform.Api.Application.Features.Overwatch.Interfaces;
-using ShooterPlatform.Api.Domain.Entities;
 using ShooterPlatform.Api.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using ShooterPlatform.Api.Application.Features.Favorite.DTOs;
 using ShooterPlatform.Api.Application.Features.Overwatch.DTOs;
+using ShooterPlatform.Api.Application.Features.Favorite.Models;
 
 namespace ShooterPlatform.Api.Application.Features.Favorite.Services
 {

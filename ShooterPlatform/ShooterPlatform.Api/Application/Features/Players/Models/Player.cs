@@ -1,4 +1,4 @@
-﻿namespace ShooterPlatform.Api.Domain.Entities
+﻿namespace ShooterPlatform.Api.Application.Features.Players.Models
 {
     public class Player
     {

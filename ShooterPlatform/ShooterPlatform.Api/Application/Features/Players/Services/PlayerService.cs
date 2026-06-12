@@ -2,8 +2,7 @@
 using ShooterPlatform.Api.Application.Features.Players.DTOs;
 using ShooterPlatform.Api.Application.Features.Players.Interfaces;
 using ShooterPlatform.Api.Application.Features.Players.Mappers;
-using ShooterPlatform.Api.Domain.Entities;
-using ShooterPlatform.Api.Domain.Enums;
+using ShooterPlatform.Api.Application.Features.Players.Models;
 using ShooterPlatform.Api.Infrastructure;
 
 namespace ShooterPlatform.Api.Application.Features.Players.Services

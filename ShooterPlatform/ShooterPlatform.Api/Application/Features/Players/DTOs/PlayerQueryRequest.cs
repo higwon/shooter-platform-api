@@ -1,4 +1,4 @@
-﻿using ShooterPlatform.Api.Domain.Enums;
+﻿using ShooterPlatform.Api.Application.Features.Players.Models;
 
 namespace ShooterPlatform.Api.Application.Features.Players.DTOs
 {

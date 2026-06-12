@@ -4,7 +4,7 @@ using ShooterPlatform.Api.Application.Features.Favorite.DTOs;
 using ShooterPlatform.Api.Application.Features.Favorite.Interfaces;
 using System.Security.Claims;
 
-namespace ShooterPlatform.Api.Controllers
+namespace ShooterPlatform.Api.Application.Features.Favorite.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

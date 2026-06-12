@@ -1,4 +1,4 @@
-﻿namespace ShooterPlatform.Api.Domain.Enums
+﻿namespace ShooterPlatform.Api.Application.Features.Players.Models
 {
     public enum PlayerSortBy
     {

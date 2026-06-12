@@ -1,5 +1,5 @@
 ﻿using ShooterPlatform.Api.Application.Features.Players.DTOs;
-using ShooterPlatform.Api.Domain.Entities;
+using ShooterPlatform.Api.Application.Features.Players.Models;
 
 namespace ShooterPlatform.Api.Application.Features.Players.Mappers
 {

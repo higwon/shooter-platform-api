@@ -1,5 +1,5 @@
 ﻿using ShooterPlatform.Api.Application.Features.Favorite.DTOs;
-using ShooterPlatform.Api.Domain.Entities;
+using ShooterPlatform.Api.Application.Features.Favorite.Models;
 
 namespace ShooterPlatform.Api.Application.Features.Favorite.Interfaces
 {

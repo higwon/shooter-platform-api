@@ -1,5 +1,7 @@
-﻿using ShooterPlatform.Api.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using ShooterPlatform.Api.Application.Features.Favorite.Models;
+using ShooterPlatform.Api.Application.Features.Auth.Models;
+using ShooterPlatform.Api.Application.Features.Players.Models;
 
 namespace ShooterPlatform.Api.Infrastructure
 {

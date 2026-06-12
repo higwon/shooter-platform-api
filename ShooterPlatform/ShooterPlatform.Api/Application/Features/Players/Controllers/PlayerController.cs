@@ -4,7 +4,7 @@ using ShooterPlatform.Api.Application.Features.Players.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ShooterPlatform.Api.Controllers
+namespace ShooterPlatform.Api.Application.Features.Players.Controllers
 {
     [Authorize]
     [ApiController]

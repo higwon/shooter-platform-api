@@ -1,7 +1,6 @@
 ﻿using ShooterPlatform.Api.Application.Features.Auth.Interfaces;
-using ShooterPlatform.Api.Domain.Entities;
+using ShooterPlatform.Api.Application.Features.Auth.Models;
 using ShooterPlatform.Api.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 namespace ShooterPlatform.Api.Application.Features.Auth.Services
 {

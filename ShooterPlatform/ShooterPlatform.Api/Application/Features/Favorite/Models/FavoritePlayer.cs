@@ -1,4 +1,6 @@
-﻿namespace ShooterPlatform.Api.Domain.Entities
+﻿using ShooterPlatform.Api.Application.Features.Auth.Models;
+
+namespace ShooterPlatform.Api.Application.Features.Favorite.Models
 {
     public class FavoritePlayer
     {

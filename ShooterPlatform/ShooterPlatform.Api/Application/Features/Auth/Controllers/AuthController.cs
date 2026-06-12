@@ -3,7 +3,7 @@ using ShooterPlatform.Api.Application.Features.Auth.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using LoginRequest = ShooterPlatform.Api.Application.Features.Auth.DTOs.LoginRequest;
 
-namespace ShooterPlatform.Api.Controllers
+namespace ShooterPlatform.Api.Application.Features.Auth.Controllers
 {
     [ApiController]
     [Route("api/auth")]
