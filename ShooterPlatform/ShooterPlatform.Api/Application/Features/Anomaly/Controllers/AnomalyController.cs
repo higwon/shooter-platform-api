@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShooterPlatform.Api.Application.Features.Anomaly.DTOs;
 using ShooterPlatform.Api.Application.Features.Anomaly.Interfaces;
+using ShooterPlatform.Api.Application.Features.Anomaly.Services;
 using System.Security.Claims;
 
 namespace ShooterPlatform.Api.Controllers
@@ -12,22 +14,33 @@ namespace ShooterPlatform.Api.Controllers
     {
         private readonly IAnomalyService _anomalyService;
         private readonly IBatchAnomalyService _batchAnomalyService;
+        private readonly IProfileCacheService _profileCacheService;
 
         public AnomalyController(
             IAnomalyService anomalyService,
-            IBatchAnomalyService batchAnomalyService)
+            IBatchAnomalyService batchAnomalyService,
+            IProfileCacheService profileCacheService)
         {
             _anomalyService = anomalyService;
             _batchAnomalyService = batchAnomalyService;
+            _profileCacheService = profileCacheService;
         }
 
         // 단일 플레이어 분석
         [HttpGet("{battleTag}")]
         public async Task<IActionResult> Analyze(string battleTag)
         {
-            var result = await _anomalyService.AnalyzeAsync(battleTag);
+            var profile =
+                await _profileCacheService.GetOrFetchAsync(battleTag);
 
-            return Ok(result);
+            var result =
+                await _anomalyService.AnalyzeAsync(profile);
+
+            return Ok(new AnomalyResponse
+            {
+                Profile = profile,
+                Result = result
+            });
         }
 
         // Favorite 기반 배치 분석

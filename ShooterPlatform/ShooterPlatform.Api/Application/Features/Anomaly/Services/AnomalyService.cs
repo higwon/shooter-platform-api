@@ -1,5 +1,6 @@
 ﻿using ShooterPlatform.Api.Application.Features.Anomaly.Interfaces;
 using ShooterPlatform.Api.Application.Features.Anomaly.Models;
+using ShooterPlatform.Api.Application.Features.Overwatch.DTOs;
 using ShooterPlatform.Api.Application.Features.Overwatch.Interfaces;
 
 namespace ShooterPlatform.Api.Application.Features.Anomaly.Services
@@ -16,10 +17,8 @@ namespace ShooterPlatform.Api.Application.Features.Anomaly.Services
             _rules = rules;
         }
 
-        public async Task<AnomalyResult> AnalyzeAsync(string battleTag)
+        public async Task<AnomalyResult> AnalyzeAsync(OverwatchProfileResponse profile)
         {
-            var profile = await _overwatchService.GetProfileAsync(battleTag);
-
             var flags = new List<AnomalyFlag>();
 
             foreach (var rule in _rules)

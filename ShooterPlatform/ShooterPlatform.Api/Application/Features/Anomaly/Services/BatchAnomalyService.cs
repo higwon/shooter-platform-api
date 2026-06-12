@@ -1,4 +1,5 @@
-﻿using ShooterPlatform.Api.Application.Features.Anomaly.Interfaces;
+﻿using ShooterPlatform.Api.Application.Features.Anomaly.DTOs;
+using ShooterPlatform.Api.Application.Features.Anomaly.Interfaces;
 using ShooterPlatform.Api.Application.Features.Anomaly.Models;
 using ShooterPlatform.Api.Application.Features.Favorite.Interfaces;
 
@@ -20,7 +21,7 @@ namespace ShooterPlatform.Api.Application.Features.Anomaly.Services
             _profileCacheService = profileCacheService;
         }
 
-        public async Task<List<AnomalyResult>> AnalyzeFavoritesAsync(int userId)
+        public async Task<List<AnomalyResponse>> AnalyzeFavoritesAsync(int userId)
         {
             var favorites = await _favoriteService.GetFavoritesAsync(userId);
 
@@ -30,9 +31,13 @@ namespace ShooterPlatform.Api.Application.Features.Anomaly.Services
                     .GetOrFetchAsync(f.BattleTag);
 
                 var result = await _anomalyService
-                    .AnalyzeAsync(f.BattleTag);
+                    .AnalyzeAsync(profile);
 
-                return result;
+                return new AnomalyResponse
+                {
+                    Profile = profile,
+                    Result = result
+                };
             });
 
             var results = await Task.WhenAll(tasks);

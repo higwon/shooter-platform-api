@@ -89,6 +89,7 @@ builder.Services.AddScoped<IOverwatchService, OverwatchService>();
 builder.Services.AddScoped<IAnomalyService, AnomalyService>();
 builder.Services.AddScoped<IAnomalyRule, WinRateRule>();
 builder.Services.AddScoped<IProfileCacheService, ProfileCacheService>();
+builder.Services.AddScoped<IBatchAnomalyService, BatchAnomalyService>();
 
 builder.Services.AddHttpClient<IOverwatchProfileProvider, OverwatchProfileProvider>();
 
