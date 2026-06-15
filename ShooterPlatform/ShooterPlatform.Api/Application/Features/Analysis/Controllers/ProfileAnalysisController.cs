@@ -1,28 +1,27 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShooterPlatform.Api.Application.Features.Anomaly.DTOs;
-using ShooterPlatform.Api.Application.Features.Anomaly.Interfaces;
-using ShooterPlatform.Api.Application.Features.Anomaly.Services;
+using ShooterPlatform.Api.Application.Features.Analysis.DTOs;
+using ShooterPlatform.Api.Application.Features.Analysis.Interfaces;
 using System.Security.Claims;
 
-namespace ShooterPlatform.Api.Controllers
+namespace ShooterPlatform.Api.Application.Features.Analysis.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class AnomalyController : ControllerBase
+    public class ProfileAnalysisController : ControllerBase
     {
-        private readonly IAnomalyService _anomalyService;
-        private readonly IBatchAnomalyService _batchAnomalyService;
+        private readonly IProfileAnalysisService _profileAnalysisService;
+        private readonly IBatchProfileAnalysisService _batchProfileAnalysisService;
         private readonly IProfileCacheService _profileCacheService;
 
-        public AnomalyController(
-            IAnomalyService anomalyService,
-            IBatchAnomalyService batchAnomalyService,
+        public ProfileAnalysisController(
+            IProfileAnalysisService profileAnalysisService,
+            IBatchProfileAnalysisService batchProfileAnalysisService,
             IProfileCacheService profileCacheService)
         {
-            _anomalyService = anomalyService;
-            _batchAnomalyService = batchAnomalyService;
+            _profileAnalysisService = profileAnalysisService;
+            _batchProfileAnalysisService = batchProfileAnalysisService;
             _profileCacheService = profileCacheService;
         }
 
@@ -34,9 +33,9 @@ namespace ShooterPlatform.Api.Controllers
                 await _profileCacheService.GetOrFetchAsync(battleTag);
 
             var result =
-                await _anomalyService.AnalyzeAsync(profile);
+                await _profileAnalysisService.AnalyzeAsync(profile);
 
-            return Ok(new AnomalyResponse
+            return Ok(new ProfileAnalysisResponse
             {
                 Profile = profile,
                 Result = result
@@ -49,7 +48,7 @@ namespace ShooterPlatform.Api.Controllers
         {
             var userId = GetUserId();
 
-            var result = await _batchAnomalyService.AnalyzeFavoritesAsync(userId);
+            var result = await _batchProfileAnalysisService.AnalyzeFavoritesAsync(userId);
 
             return Ok(result);
         }

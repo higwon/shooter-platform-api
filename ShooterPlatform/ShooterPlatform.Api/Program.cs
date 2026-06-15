@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using ShooterPlatform.Api.Application.Features.Anomaly.Interfaces;
-using ShooterPlatform.Api.Application.Features.Anomaly.Rules;
-using ShooterPlatform.Api.Application.Features.Anomaly.Services;
+using ShooterPlatform.Api.Application.Features.Analysis.Interfaces;
+using ShooterPlatform.Api.Application.Features.Analysis.Rules;
+using ShooterPlatform.Api.Application.Features.Analysis.Services;
 using ShooterPlatform.Api.Application.Features.Auth.Interfaces;
 using ShooterPlatform.Api.Application.Features.Auth.Services;
 using ShooterPlatform.Api.Application.Features.Favorite.Interfaces;
@@ -86,10 +86,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<IOverwatchService, OverwatchService>();
-builder.Services.AddScoped<IAnomalyService, AnomalyService>();
-builder.Services.AddScoped<IAnomalyRule, WinRateRule>();
+builder.Services.AddScoped<IProfileAnalysisService, ProfileAnalysisService>();
+builder.Services.AddScoped<IProfileAnalysisRule, WinRateRule>();
 builder.Services.AddScoped<IProfileCacheService, ProfileCacheService>();
-builder.Services.AddScoped<IBatchAnomalyService, BatchAnomalyService>();
+builder.Services.AddScoped<IBatchProfileAnalysisService, BatchProfileAnalysisService>();
 
 builder.Services.AddHttpClient<IOverwatchProfileProvider, OverwatchProfileProvider>();
 

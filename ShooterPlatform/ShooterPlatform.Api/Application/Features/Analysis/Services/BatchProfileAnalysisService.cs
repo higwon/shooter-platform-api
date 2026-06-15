@@ -1,27 +1,27 @@
-﻿using ShooterPlatform.Api.Application.Features.Anomaly.DTOs;
-using ShooterPlatform.Api.Application.Features.Anomaly.Interfaces;
-using ShooterPlatform.Api.Application.Features.Anomaly.Models;
+﻿using ShooterPlatform.Api.Application.Features.Analysis.DTOs;
+using ShooterPlatform.Api.Application.Features.Analysis.Interfaces;
+using ShooterPlatform.Api.Application.Features.Analysis.Models;
 using ShooterPlatform.Api.Application.Features.Favorite.Interfaces;
 
-namespace ShooterPlatform.Api.Application.Features.Anomaly.Services
+namespace ShooterPlatform.Api.Application.Features.Analysis.Services
 {
-    public class BatchAnomalyService : IBatchAnomalyService
+    public class BatchProfileAnalysisService : IBatchProfileAnalysisService
     {
         private readonly IFavoriteService _favoriteService;
-        private readonly IAnomalyService _anomalyService;
+        private readonly IProfileAnalysisService _profileAnalysisService;
         private readonly IProfileCacheService _profileCacheService;
 
-        public BatchAnomalyService(
+        public BatchProfileAnalysisService(
             IFavoriteService favoriteService,
-            IAnomalyService anomalyService,
+            IProfileAnalysisService profileAnalysisService,
             IProfileCacheService profileCacheService)
         {
             _favoriteService = favoriteService;
-            _anomalyService = anomalyService;
+            _profileAnalysisService = profileAnalysisService;
             _profileCacheService = profileCacheService;
         }
 
-        public async Task<List<AnomalyResponse>> AnalyzeFavoritesAsync(int userId)
+        public async Task<List<ProfileAnalysisResponse>> AnalyzeFavoritesAsync(int userId)
         {
             var favorites = await _favoriteService.GetFavoritesAsync(userId);
 
@@ -30,10 +30,10 @@ namespace ShooterPlatform.Api.Application.Features.Anomaly.Services
                 var profile = await _profileCacheService
                     .GetOrFetchAsync(f.BattleTag);
 
-                var result = await _anomalyService
+                var result = await _profileAnalysisService
                     .AnalyzeAsync(profile);
 
-                return new AnomalyResponse
+                return new ProfileAnalysisResponse
                 {
                     Profile = profile,
                     Result = result

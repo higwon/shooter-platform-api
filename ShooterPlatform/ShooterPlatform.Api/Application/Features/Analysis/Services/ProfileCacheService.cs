@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using ShooterPlatform.Api.Application.Features.Anomaly.Interfaces;
+using ShooterPlatform.Api.Application.Features.Analysis.Interfaces;
 using ShooterPlatform.Api.Application.Features.Overwatch.DTOs;
 using ShooterPlatform.Api.Application.Features.Overwatch.Interfaces;
 
-namespace ShooterPlatform.Api.Application.Features.Anomaly.Services
+namespace ShooterPlatform.Api.Application.Features.Analysis.Services
 {
     public class ProfileCacheService : IProfileCacheService
     {

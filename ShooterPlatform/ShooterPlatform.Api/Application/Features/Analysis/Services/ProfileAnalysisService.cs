@@ -1,25 +1,22 @@
-﻿using ShooterPlatform.Api.Application.Features.Anomaly.Interfaces;
-using ShooterPlatform.Api.Application.Features.Anomaly.Models;
+﻿using ShooterPlatform.Api.Application.Features.Analysis.Interfaces;
+using ShooterPlatform.Api.Application.Features.Analysis.Models;
 using ShooterPlatform.Api.Application.Features.Overwatch.DTOs;
 using ShooterPlatform.Api.Application.Features.Overwatch.Interfaces;
 
-namespace ShooterPlatform.Api.Application.Features.Anomaly.Services
+namespace ShooterPlatform.Api.Application.Features.Analysis.Services
 {
-    public class AnomalyService : IAnomalyService
+    public class ProfileAnalysisService : IProfileAnalysisService
     {
-        private readonly IOverwatchService _overwatchService;
+        private readonly IEnumerable<IProfileAnalysisRule> _rules;
 
-        private readonly IEnumerable<IAnomalyRule> _rules;
-
-        public AnomalyService(IOverwatchService overwatchService, IEnumerable<IAnomalyRule> rules)
+        public ProfileAnalysisService(IEnumerable<IProfileAnalysisRule> rules)
         {
-            _overwatchService = overwatchService;
             _rules = rules;
         }
 
-        public async Task<AnomalyResult> AnalyzeAsync(OverwatchProfileResponse profile)
+        public async Task<ProfileAnalysisResult> AnalyzeAsync(OverwatchProfileResponse profile)
         {
-            var flags = new List<AnomalyFlag>();
+            var flags = new List<ProfileAnalysisFlag>();
 
             foreach (var rule in _rules)
             {
@@ -33,7 +30,7 @@ namespace ShooterPlatform.Api.Application.Features.Anomaly.Services
 
             var riskScore = flags.Sum(x => x.Score);
 
-            return new AnomalyResult
+            return new ProfileAnalysisResult
             {
                 RiskScore = riskScore,
                 RiskLevel = CalculateRiskLevel(riskScore),

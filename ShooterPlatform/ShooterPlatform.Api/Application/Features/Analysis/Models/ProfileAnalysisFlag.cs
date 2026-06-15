@@ -1,6 +1,6 @@
-﻿namespace ShooterPlatform.Api.Application.Features.Anomaly.Models
+﻿namespace ShooterPlatform.Api.Application.Features.Analysis.Models
 {
-    public class AnomalyFlag
+    public class ProfileAnalysisFlag
     {
         public string Code { get; set; } = string.Empty;
 
