@@ -89,6 +89,7 @@ builder.Services.AddScoped<IOverwatchService, OverwatchService>();
 builder.Services.AddScoped<IProfileAnalysisService, ProfileAnalysisService>();
 builder.Services.AddScoped<IProfileAnalysisRule, WinRateRule>();
 builder.Services.AddScoped<IProfileAnalysisRule, OneTrickRule>();
+builder.Services.AddScoped<IProfileAnalysisRule, AccuracyRule>();
 builder.Services.AddScoped<IProfileCacheService, ProfileCacheService>();
 builder.Services.AddScoped<IBatchProfileAnalysisService, BatchProfileAnalysisService>();
 
