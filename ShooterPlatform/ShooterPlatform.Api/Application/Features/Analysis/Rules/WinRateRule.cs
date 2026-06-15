@@ -96,7 +96,7 @@ namespace ShooterPlatform.Api.Application.Features.Analysis.Rules
                     Code = "HIGH_WIN_RATE",
                     Message =
                         $"{bestHero.Hero} maintains a {bestHero.WinRate:F1}% win rate " +
-                        $"with {bestHero.GamesWon:F0} wins and {bestHero.TimePlayed:F1} hours played.",
+                        $"with {bestHero.GamesWon:F0} wins and {bestHero.TimePlayed:F1} played.",
                     Score = score
                 });
         }

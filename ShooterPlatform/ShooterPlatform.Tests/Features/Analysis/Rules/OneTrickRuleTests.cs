@@ -1,4 +1,6 @@
-﻿using ShooterPlatform.Api.Application.Features.Analysis.Rules;
+﻿using ShooterPlatform.Api.Application.Features.Analysis.Contexts;
+using ShooterPlatform.Api.Application.Features.Analysis.Rules;
+using ShooterPlatform.Api.Application.Features.Overwatch.DTOs;
 using ShooterPlatform.Api.Application.Features.Overwatch.Providers;
 using System;
 using System.Collections.Generic;
@@ -37,6 +39,41 @@ namespace ShooterPlatform.Tests.Features.Analysis.Rules
                 Assert.NotEmpty(result.Message);
                 Assert.True(result.Score > 0);
             }
+        }
+
+        [Fact]
+        public async Task EvaluateAsync_ShouldReturnFlag_WhenHeroDominatesPlaytime()
+        {
+            var rule = new OneTrickRule();
+
+            var context = new ProfileAnalysisContext
+            {
+                HeroComparisons = new HeroComparisons
+                {
+                    TimePlayed = new HeroMetric
+                    {
+                        Values =
+                        [
+                            new HeroMetricValue
+                            {
+                                Hero = "Widowmaker",
+                                Value = 9000
+                            },
+
+                            new HeroMetricValue
+                            {
+                                Hero = "Tracer",
+                                Value = 1000
+                            }
+                        ]
+                    }
+                }
+            };
+
+            var result = await rule.EvaluateAsync(context);
+
+            Assert.NotNull(result);
+            Assert.Equal("ONE_TRICK_PLAYER", result.Code);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ShooterPlatform.Api.Application.Features.Analysis.Contexts;
 using ShooterPlatform.Api.Application.Features.Analysis.Rules;
+using ShooterPlatform.Api.Application.Features.Overwatch.DTOs;
 using ShooterPlatform.Api.Application.Features.Overwatch.Providers;
 
 namespace ShooterPlatform.Tests.Features.Analysis.Rules
@@ -35,6 +36,59 @@ namespace ShooterPlatform.Tests.Features.Analysis.Rules
                 Assert.NotEmpty(result.Message);
                 Assert.True(result.Score > 0);
             }
+        }
+
+        [Fact]
+        public async Task EvaluateAsync_ShouldReturnFlag_WhenWinRateIsHigh()
+        {
+            var rule = new WinRateRule();
+
+            var context = new ProfileAnalysisContext
+            {
+                HeroComparisons = new HeroComparisons
+                {
+                    WinPercentage = new HeroMetric
+                    {
+                        Values =
+                        [
+                            new HeroMetricValue
+                            {
+                                Hero = "Widowmaker",
+                                Value = 90
+                            }
+                        ]
+                    },
+
+                    GamesWon = new HeroMetric
+                    {
+                        Values =
+                        [
+                            new HeroMetricValue
+                            {
+                                Hero = "Widowmaker",
+                                Value = 50
+                            }
+                        ]
+                    },
+
+                    TimePlayed = new HeroMetric
+                    {
+                        Values =
+                        [
+                            new HeroMetricValue
+                            {
+                                Hero = "Widowmaker",
+                                Value = 3000
+                            }
+                        ]
+                    }
+                }
+            };
+
+            var result = await rule.EvaluateAsync(context);
+
+            Assert.NotNull(result);
+            Assert.Equal("HIGH_WIN_RATE", result.Code);
         }
     }
 }

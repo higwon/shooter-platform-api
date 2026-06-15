@@ -43,5 +43,58 @@ namespace ShooterPlatform.Tests.Features.Analysis.Rules
                 Assert.True(result.Score > 0);
             }
         }
+
+        [Fact]
+        public async Task EvaluateAsync_ShouldReturnFlag_WhenAccuracyIsHigh()
+        {
+            var rule = new AccuracyRule();
+
+            var context = new ProfileAnalysisContext
+            {
+                HeroComparisons = new HeroComparisons
+                {
+                    WeaponAccuracyBestInGame = new HeroMetric
+                    {
+                        Values =
+                        [
+                            new HeroMetricValue
+                            {
+                                Hero = "Widowmaker",
+                                Value = 85
+                            }
+                        ]
+                    },
+
+                    GamesWon = new HeroMetric
+                    {
+                        Values =
+                        [
+                            new HeroMetricValue
+                            {
+                                Hero = "Widowmaker",
+                                Value = 50
+                            }
+                        ]
+                    },
+
+                    TimePlayed = new HeroMetric
+                    {
+                        Values =
+                        [
+                            new HeroMetricValue
+                            {
+                                Hero = "Widowmaker",
+                                Value = 3000
+                            }
+                        ]
+                    }
+                }
+            };
+
+            var result = await rule.EvaluateAsync(context);
+
+            Assert.NotNull(result);
+            Assert.Equal("HIGH_ACCURACY", result.Code);
+        }
     }
 }
