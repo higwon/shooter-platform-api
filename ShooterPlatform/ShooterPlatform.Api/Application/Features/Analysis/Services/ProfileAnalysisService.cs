@@ -1,4 +1,5 @@
-﻿using ShooterPlatform.Api.Application.Features.Analysis.Interfaces;
+﻿using ShooterPlatform.Api.Application.Features.Analysis.Contexts;
+using ShooterPlatform.Api.Application.Features.Analysis.Interfaces;
 using ShooterPlatform.Api.Application.Features.Analysis.Models;
 using ShooterPlatform.Api.Application.Features.Overwatch.DTOs;
 using ShooterPlatform.Api.Application.Features.Overwatch.Interfaces;
@@ -16,11 +17,24 @@ namespace ShooterPlatform.Api.Application.Features.Analysis.Services
 
         public async Task<ProfileAnalysisResult> AnalyzeAsync(OverwatchProfileResponse profile)
         {
+            var context = BuildContext(profile);
+
+            if (context == null)
+            {
+                return new ProfileAnalysisResult
+                {
+                    RiskLevel = RiskLevel.Low,
+                    RiskScore = 0,
+                    Flags = []
+                };
+            }
+
+
             var flags = new List<ProfileAnalysisFlag>();
 
             foreach (var rule in _rules)
             {
-                var flag = await rule.EvaluateAsync(profile);
+                var flag = await rule.EvaluateAsync(context);
 
                 if (flag != null)
                 {
@@ -47,6 +61,43 @@ namespace ShooterPlatform.Api.Application.Features.Analysis.Services
                 return RiskLevel.Medium;
 
             return RiskLevel.Low;
+        }
+
+        private static ProfileAnalysisContext? BuildContext(OverwatchProfileResponse profile)
+        {
+            var pcComparisons =
+                profile.Stats?
+                       .Pc?
+                       .Competitive?
+                       .HeroesComparisons;
+
+            if (pcComparisons != null)
+            {
+                return new ProfileAnalysisContext
+                {
+                    Platform = "PC",
+                    HeroComparisons = pcComparisons,
+                    Profile = profile
+                };
+            }
+
+            var consoleComparisons =
+                profile.Stats?
+                       .Console?
+                       .Competitive?
+                       .HeroesComparisons;
+
+            if (consoleComparisons != null)
+            {
+                return new ProfileAnalysisContext
+                {
+                    Platform = "Console",
+                    HeroComparisons = consoleComparisons,
+                    Profile = profile
+                };
+            }
+
+            return null;
         }
     }
 }
