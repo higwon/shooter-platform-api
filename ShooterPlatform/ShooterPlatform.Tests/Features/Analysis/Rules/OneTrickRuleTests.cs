@@ -1,19 +1,20 @@
-﻿using ShooterPlatform.Api.Application.Features.Analysis.Contexts;
-using ShooterPlatform.Api.Application.Features.Analysis.Rules;
-using ShooterPlatform.Api.Application.Features.Overwatch.DTOs;
+﻿using ShooterPlatform.Api.Application.Features.Analysis.Rules;
 using ShooterPlatform.Api.Application.Features.Overwatch.Providers;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace ShooterPlatform.Tests.Features.Analysis.Rules
 {
-    public class WinRateRuleTests
+    public class OneTrickRuleTests
     {
         private readonly OverwatchProfileProvider _provider;
-        private readonly WinRateRule _rule;
+        private readonly OneTrickRule _rule;
 
-        public WinRateRuleTests()
+        public OneTrickRuleTests()
         {
             _provider = new OverwatchProfileProvider(new HttpClient());
-            _rule = new WinRateRule();
+            _rule = new OneTrickRule();
         }
 
         [Fact]
@@ -24,12 +25,6 @@ namespace ShooterPlatform.Tests.Features.Analysis.Rules
 
             var profile = await _provider.FetchAsync(battleTag);
 
-            var comparisons =
-                profile.Stats?.Pc?.Competitive?.HeroesComparisons
-                ?? profile.Stats?.Console?.Competitive?.HeroesComparisons;
-
-            Assert.NotNull(comparisons);
-
             var context = AnalysisTestHelper.CreateContext(profile);
 
             var result = await _rule.EvaluateAsync(context);
@@ -38,7 +33,7 @@ namespace ShooterPlatform.Tests.Features.Analysis.Rules
 
             if (result != null)
             {
-                Assert.NotEmpty(result.Code);
+                Assert.Equal("ONE_TRICK_PLAYER", result.Code);
                 Assert.NotEmpty(result.Message);
                 Assert.True(result.Score > 0);
             }

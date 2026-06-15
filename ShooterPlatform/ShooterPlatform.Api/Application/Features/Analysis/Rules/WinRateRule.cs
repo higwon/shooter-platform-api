@@ -1,7 +1,6 @@
 ﻿using ShooterPlatform.Api.Application.Features.Analysis.Contexts;
 using ShooterPlatform.Api.Application.Features.Analysis.Interfaces;
 using ShooterPlatform.Api.Application.Features.Analysis.Models;
-using ShooterPlatform.Api.Application.Features.Overwatch.DTOs;
 
 namespace ShooterPlatform.Api.Application.Features.Analysis.Rules
 {
