@@ -14,23 +14,15 @@ permissions:
 env:
   ACR_NAME: shooterregistry
   IMAGE_NAME: shooter-api
-  RESOURCE_GROUP: rg-shooter-api-prod
-  WEBAPP_NAME: shooter-api-prod
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      # =========================
-      # Checkout
-      # =========================
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # =========================
-      # Azure Login (OIDC)
-      # =========================
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -38,50 +30,21 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F67D3E9D61994768B3E06A2D6E80F9E2 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_49FAB41424B84118BE0DD3245D7BC4E9 }}
 
-      # =========================
-      # ACR Login (ADMIN USER)
-      # =========================
       - name: Login to ACR
         run: |
           echo "${{ secrets.ACR_PASSWORD }}" | docker login $ACR_NAME.azurecr.io \
             -u ${{ secrets.ACR_USERNAME }} \
             --password-stdin
 
-      # =========================
-      # Build Docker Image
-      # =========================
       - name: Build Docker Image
         working-directory: ShooterPlatform
         run: |
           docker build \
-            -t $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }} \
             -t $ACR_NAME.azurecr.io/$IMAGE_NAME:latest \
+            -t $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }} \
             .
 
-      # =========================
-      # Push Docker Image
-      # =========================
       - name: Push Docker Image
         run: |
-          docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }}
           docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
-
-      # =========================
-      # Deploy Web App Container
-      # =========================
-      - name: Update Web App Container
-        run: |
-          az webapp config container set \
-            --name $WEBAPP_NAME \
-            --resource-group $RESOURCE_GROUP \
-            --docker-custom-image-name $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }} \
-            --docker-registry-server-url https://$ACR_NAME.azurecr.io
-
-      # =========================
-      # Restart App
-      # =========================
-      - name: Restart Web App
-        run: |
-          az webapp restart \
-            --name $WEBAPP_NAME \
-            --resource-group $RESOURCE_GROUP
+          docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }}
