@@ -9,7 +9,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 env:
   ACR_NAME: shooterregistry
@@ -23,13 +22,13 @@ jobs:
 
     steps:
       # =========================
-      # Checkout source
+      # Checkout
       # =========================
       - name: Checkout source
         uses: actions/checkout@v4
 
       # =========================
-      # Azure Login (OIDC 유지 - WebApp 배포용)
+      # Azure Login
       # =========================
       - name: Azure Login
         uses: azure/login@v2
@@ -39,7 +38,7 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_49FAB41424B84118BE0DD3245D7BC4E9 }}
 
       # =========================
-      # ACR Login (ADMIN USER 방식)
+      # ACR Login (admin)
       # =========================
       - name: Login to ACR
         run: |
@@ -48,9 +47,10 @@ jobs:
             --password-stdin
 
       # =========================
-      # Build Docker Image
+      # Build Docker Image (FIXED PATH)
       # =========================
       - name: Build Docker Image
+        working-directory: ShooterPlatform
         run: |
           docker build \
             -t $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }} \
@@ -58,7 +58,7 @@ jobs:
             .
 
       # =========================
-      # Push Docker Image
+      # Push Image
       # =========================
       - name: Push Docker Image
         run: |
@@ -66,7 +66,7 @@ jobs:
           docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
 
       # =========================
-      # Deploy to Azure Web App
+      # Deploy Web App Container
       # =========================
       - name: Update Web App Container
         run: |
