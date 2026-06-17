@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 env:
   ACR_NAME: shooterregistry
@@ -28,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
 
       # =========================
-      # Azure Login
+      # Azure Login (OIDC)
       # =========================
       - name: Azure Login
         uses: azure/login@v2
@@ -38,7 +39,7 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_49FAB41424B84118BE0DD3245D7BC4E9 }}
 
       # =========================
-      # ACR Login (admin)
+      # ACR Login (ADMIN USER)
       # =========================
       - name: Login to ACR
         run: |
@@ -47,7 +48,7 @@ jobs:
             --password-stdin
 
       # =========================
-      # Build Docker Image (FIXED PATH)
+      # Build Docker Image
       # =========================
       - name: Build Docker Image
         working-directory: ShooterPlatform
@@ -58,7 +59,7 @@ jobs:
             .
 
       # =========================
-      # Push Image
+      # Push Docker Image
       # =========================
       - name: Push Docker Image
         run: |
