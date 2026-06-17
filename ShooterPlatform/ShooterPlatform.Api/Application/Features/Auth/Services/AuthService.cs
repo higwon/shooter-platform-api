@@ -1,4 +1,5 @@
-﻿using ShooterPlatform.Api.Application.Features.Auth.Interfaces;
+﻿using ShooterPlatform.Api.Application.Features.Auth.DTOs;
+using ShooterPlatform.Api.Application.Features.Auth.Interfaces;
 using ShooterPlatform.Api.Application.Features.Auth.Models;
 using ShooterPlatform.Api.Infrastructure;
 
@@ -46,6 +47,16 @@ namespace ShooterPlatform.Api.Application.Features.Auth.Services
             _dbContext.SaveChanges();
 
             return true;
+        }
+
+        public List<AuthUserResponse> GetUsers()
+        {
+            return _dbContext.Users
+                .Select(x => new AuthUserResponse
+                {
+                    Username = x.Email
+                })
+                .ToList();
         }
     }
 }

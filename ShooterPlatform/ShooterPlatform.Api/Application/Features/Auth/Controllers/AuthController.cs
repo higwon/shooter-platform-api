@@ -37,5 +37,12 @@ namespace ShooterPlatform.Api.Application.Features.Auth.Controllers
 
             return Ok();
         }
+
+        [HttpGet("users")]
+        public IActionResult GetUsers()
+        {
+            var users = _authService.GetUsers();
+            return Ok(users);
+        }
     }
 }
