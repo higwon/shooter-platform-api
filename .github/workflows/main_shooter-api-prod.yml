@@ -1,0 +1,47 @@
+name: Build and Deploy Container
+
+on:
+push:
+branches:
+- main
+
+workflow_dispatch:
+
+jobs:
+build-and-deploy:
+runs-on: ubuntu-latest
+
+```
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+
+  - name: Azure Login
+    uses: azure/login@v2
+    with:
+      client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F60B7CF6D0BE4708B0D2BBFC1C3248C4 }}
+      tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F67D3E9D61994768B3E06A2D6E80F9E2 }}
+      subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_49FAB41424B84118BE0DD3245D7BC4E9 }}
+
+  - name: Login to Azure Container Registry
+    run: |
+      docker login shooterregistry.azurecr.io \
+        -u ${{ secrets.ACR_USERNAME }} \
+        -p ${{ secrets.ACR_PASSWORD }}
+
+  - name: Build Docker Image
+    run: |
+      docker build \
+        -t shooterregistry.azurecr.io/shooter-api:latest \
+        .
+
+  - name: Push Docker Image
+    run: |
+      docker push shooterregistry.azurecr.io/shooter-api:latest
+
+  - name: Restart App Service
+    run: |
+      az webapp restart \
+        --resource-group rg-shooter-api-prod \
+        --name shooter-api-prod
+```
