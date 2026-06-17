@@ -22,6 +22,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # =========================
+      # Checkout
+      # =========================
       - name: Checkout source
         uses: actions/checkout@v4
 
@@ -31,15 +34,20 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F60B7CF6D0BE4708B0D2BBFC1C3248C4 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F67D3E9D61994768B3E06A2D6E80F9E2 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_49FAB41424B84118BE0DD3245D7BC4E9 }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Set Azure Subscription
+        run: |
+          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # =========================
-      # ACR Login (OIDC via Azure CLI)
+      # ACR Login
       # =========================
       - name: Login to ACR
-        run: az acr login --name $ACR_NAME
+        run: |
+          az acr login --name $ACR_NAME
 
       # =========================
       # Docker Build
@@ -52,7 +60,7 @@ jobs:
             .
 
       # =========================
-      # Push Docker Image
+      # Push Image
       # =========================
       - name: Push Docker Image
         run: |
@@ -60,7 +68,7 @@ jobs:
           docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
 
       # =========================
-      # Deploy to Azure Web App
+      # Deploy Web App Container
       # =========================
       - name: Update Web App Container
         run: |
@@ -71,7 +79,7 @@ jobs:
             --docker-registry-server-url https://$ACR_NAME.azurecr.io
 
       # =========================
-      # Restart (optional but safe)
+      # Restart App
       # =========================
       - name: Restart Web App
         run: |
