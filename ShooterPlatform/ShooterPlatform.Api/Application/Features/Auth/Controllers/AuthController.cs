@@ -1,12 +1,14 @@
-﻿using ShooterPlatform.Api.Application.Features.Auth.DTOs;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using ShooterPlatform.Api.Application.Features.Auth.DTOs;
 using ShooterPlatform.Api.Application.Features.Auth.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using LoginRequest = ShooterPlatform.Api.Application.Features.Auth.DTOs.LoginRequest;
 
 namespace ShooterPlatform.Api.Application.Features.Auth.Controllers
 {
     [ApiController]
     [Route("api/auth")]
+    [EnableRateLimiting("auth-limit")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;

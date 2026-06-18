@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using ShooterPlatform.Api.Application.Features.Favorite.DTOs;
 using ShooterPlatform.Api.Application.Features.Favorite.Interfaces;
 using System.Security.Claims;
@@ -8,6 +9,7 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableRateLimiting("profile-limit")]
     [Authorize]
     public class FavoritesController : ControllerBase
     {

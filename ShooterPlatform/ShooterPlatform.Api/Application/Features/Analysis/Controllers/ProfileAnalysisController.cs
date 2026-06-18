@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using ShooterPlatform.Api.Application.Features.Analysis.DTOs;
 using ShooterPlatform.Api.Application.Features.Analysis.Interfaces;
 using System.Security.Claims;
@@ -8,6 +9,7 @@ namespace ShooterPlatform.Api.Application.Features.Analysis.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableRateLimiting("analysis-limit")]
     [Authorize]
     public class ProfileAnalysisController : ControllerBase
     {
