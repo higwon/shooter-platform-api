@@ -5,7 +5,7 @@ namespace ShooterPlatform.Api.Application.Features.Analysis.DTOs
 {
     public class ProfileAnalysisResponse
     {
-        public OverwatchProfileResponse Profile { get; set; }
+        public ProfileSummary ProfileSummary { get; set; }
         public ProfileAnalysisResult Result { get; set; }
     }
 }

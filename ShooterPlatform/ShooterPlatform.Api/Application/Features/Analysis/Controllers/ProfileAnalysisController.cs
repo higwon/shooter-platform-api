@@ -37,7 +37,7 @@ namespace ShooterPlatform.Api.Application.Features.Analysis.Controllers
 
             return Ok(new ProfileAnalysisResponse
             {
-                Profile = profile,
+                ProfileSummary = profile.Summary,
                 Result = result
             });
         }
