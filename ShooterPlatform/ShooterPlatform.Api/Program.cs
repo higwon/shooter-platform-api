@@ -77,11 +77,21 @@ builder.Services.Configure<JwtSettings>(
 // Cache
 // ========================
 builder.Services.AddMemoryCache();
-builder.Services.AddStackExchangeRedisCache(options =>
+
+var redisConnection = builder.Configuration.GetConnectionString("Redis");
+
+if (!string.IsNullOrWhiteSpace(redisConnection))
 {
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
-    options.InstanceName = "ShooterPlatform:";
-});
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = redisConnection;
+        options.InstanceName = "ShooterPlatform:";
+    });
+}
+else
+{
+    builder.Services.AddDistributedMemoryCache();
+}
 
 // ========================
 // DI
