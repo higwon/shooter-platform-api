@@ -1,6 +1,6 @@
 ﻿using ShooterPlatform.Api.Application.Features.Analysis.Contexts;
+using ShooterPlatform.Api.Application.Features.Analysis.DTOs;
 using ShooterPlatform.Api.Application.Features.Analysis.Interfaces;
-using ShooterPlatform.Api.Application.Features.Analysis.Models;
 using ShooterPlatform.Api.Application.Features.Overwatch.DTOs;
 using ShooterPlatform.Api.Application.Features.Overwatch.Interfaces;
 

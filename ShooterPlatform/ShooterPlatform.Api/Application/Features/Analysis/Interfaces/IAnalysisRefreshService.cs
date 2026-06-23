@@ -2,8 +2,8 @@
 
 namespace ShooterPlatform.Api.Application.Features.Analysis.Interfaces
 {
-    public interface IBatchProfileAnalysisService
+    public interface IAnalysisRefreshService
     {
-        Task<List<ProfileAnalysisResponse>> AnalyzeFavoritesAsync(int userId);
+        Task AnalyzeAndSaveAsync(string battleTag);
     }
 }

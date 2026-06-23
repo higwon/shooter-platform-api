@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShooterPlatform.Api.Application.Features.Favorite.Models;
+using ShooterPlatform.Api.Application.Features.Analysis.Models;
 using ShooterPlatform.Api.Application.Features.Auth.Models;
+using ShooterPlatform.Api.Application.Features.Favorite.Models;
 using ShooterPlatform.Api.Application.Features.Players.Models;
 
 namespace ShooterPlatform.Api.Infrastructure
@@ -18,6 +19,8 @@ namespace ShooterPlatform.Api.Infrastructure
 
         public DbSet<FavoritePlayer> FavoritePlayers => Set<FavoritePlayer>();
 
+        public DbSet<AnalysisResult> AnalysisResults { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -32,6 +35,16 @@ namespace ShooterPlatform.Api.Infrastructure
                       .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(x => new { x.UserId, x.BattleTag })
+                      .IsUnique();
+
+                entity.Property(x => x.BattleTag)
+                      .HasMaxLength(100)
+                      .IsRequired();
+            });
+
+            modelBuilder.Entity<AnalysisResult>(entity =>
+            {
+                entity.HasIndex(x => x.BattleTag)
                       .IsUnique();
 
                 entity.Property(x => x.BattleTag)

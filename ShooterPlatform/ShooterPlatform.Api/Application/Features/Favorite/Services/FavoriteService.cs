@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShooterPlatform.Api.Application.Features.Analysis.Interfaces;
+using ShooterPlatform.Api.Application.Features.Analysis.Services;
 using ShooterPlatform.Api.Application.Features.Favorite.DTOs;
 using ShooterPlatform.Api.Application.Features.Favorite.Interfaces;
 using ShooterPlatform.Api.Application.Features.Favorite.Models;
@@ -12,11 +13,19 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Services
     {
         private readonly ShooterPlatformDbContext _dbContext;
         private readonly IProfileCacheService _profileCacheService;
+        private readonly IAnalysisRefreshService _analysisRefreshService;
+        private readonly IAnalysisResultService _analysisResultService;
 
-        public FavoriteService(ShooterPlatformDbContext dbContext,IProfileCacheService profileCacheService)
+        public FavoriteService(
+            ShooterPlatformDbContext dbContext,
+            IProfileCacheService profileCacheService,
+            IAnalysisRefreshService analysisRefreshService,
+            IAnalysisResultService analysisResultService)
         {
             _dbContext = dbContext;
             _profileCacheService = profileCacheService;
+            _analysisRefreshService = analysisRefreshService;
+            _analysisResultService = analysisResultService;
         }
 
         public async Task<FavoritePlayer> AddFavoriteAsync(int userId, string battleTag)
@@ -44,37 +53,55 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Services
 
             await _dbContext.SaveChangesAsync();
 
+            await _analysisRefreshService
+                .AnalyzeAndSaveAsync(battleTag);
+
             return favoritePlayer;
         }
 
-        public async Task<List<FavoriteResponse>> GetFavoritesAsync(
-            int userId)
+        public async Task RefreshAnalysisAsync(int userId)
+        {
+            var battleTags = await _dbContext.FavoritePlayers
+                .Where(x => x.UserId == userId)
+                .Select(x => x.BattleTag)
+                .ToListAsync();
+
+            foreach (var battleTag in battleTags)
+            {
+                await _analysisRefreshService
+                    .AnalyzeAndSaveAsync(battleTag);
+            }
+        }
+
+        public async Task<List<FavoriteResponse>> GetFavoritesAsync(int userId)
         {
             var favorites = await _dbContext.FavoritePlayers
                 .Where(x => x.UserId == userId)
                 .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
 
-            var tasks = favorites.Select(async favorite =>
+            var results = new List<FavoriteResponse>();
+
+            foreach (var favorite in favorites)
             {
-                var profile = await _profileCacheService.GetOrFetchAsync(favorite.BattleTag);
+                var analysis = await _analysisResultService
+                    .GetByBattleTagAsync(favorite.BattleTag);
 
-                var pc = profile.Summary.Competitive?.Pc;
-
-                return new FavoriteResponse
+                results.Add(new FavoriteResponse
                 {
                     Id = favorite.Id,
                     BattleTag = favorite.BattleTag,
-                    Username = profile.Summary.Username,
-                    Avatar = profile.Summary.Avatar,
 
-                    TankRank = ToRankString(pc?.Tank),
-                    DamageRank = ToRankString(pc?.Damage),
-                    SupportRank = ToRankString(pc?.Support)
-                };
-            });
+                    Username = favorite.CachedUsername,
+                    Avatar = favorite.CachedAvatar,
 
-            return (await Task.WhenAll(tasks)).ToList();
+                    RiskScore = analysis?.RiskScore,
+                    RiskLevel = analysis?.RiskLevel,
+                    AnalyzedAt = analysis?.AnalyzedAt
+                });
+            }
+
+            return results;
         }
 
         public async Task DeleteFavoriteAsync(
@@ -95,15 +122,5 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        private static string? ToRankString(Role? role)
-        {
-            if (role == null)
-                return null;
-
-            if (string.IsNullOrWhiteSpace(role.Division))
-                return null;
-
-            return $"{role.Division} {role.Tier}";
-        }
     }
 }

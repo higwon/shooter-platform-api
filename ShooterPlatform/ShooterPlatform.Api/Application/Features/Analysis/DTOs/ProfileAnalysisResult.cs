@@ -1,4 +1,4 @@
-﻿namespace ShooterPlatform.Api.Application.Features.Analysis.Models
+﻿namespace ShooterPlatform.Api.Application.Features.Analysis.DTOs
 {
     public class ProfileAnalysisResult
     {

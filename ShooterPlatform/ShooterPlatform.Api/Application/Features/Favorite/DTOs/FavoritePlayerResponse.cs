@@ -1,19 +1,22 @@
-﻿namespace ShooterPlatform.Api.Application.Features.Favorite.DTOs
+﻿using ShooterPlatform.Api.Application.Features.Analysis.DTOs;
+using ShooterPlatform.Api.Application.Features.Analysis.Models;
+
+namespace ShooterPlatform.Api.Application.Features.Favorite.DTOs
 {
     public class FavoriteResponse
     {
         public int Id { get; set; }
 
-        public string BattleTag { get; set; }
+        public string BattleTag { get; set; } = string.Empty;
 
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
-        public string Avatar { get; set; }
+        public string Avatar { get; set; } = string.Empty;
 
-        public string? TankRank { get; set; }
+        public int? RiskScore { get; set; }
 
-        public string? DamageRank { get; set; }
+        public RiskLevel? RiskLevel { get; set; }
 
-        public string? SupportRank { get; set; }
+        public DateTime? AnalyzedAt { get; set; }
     }
 }

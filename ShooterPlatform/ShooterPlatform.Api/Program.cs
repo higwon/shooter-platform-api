@@ -86,7 +86,18 @@ if (!string.IsNullOrWhiteSpace(redisConnection))
 {
     builder.Services.AddStackExchangeRedisCache(options =>
     {
-        options.Configuration = redisConnection;
+        options.ConfigurationOptions =
+            new StackExchange.Redis.ConfigurationOptions
+            {
+                EndPoints = { redisConnection },
+
+                ConnectTimeout = 1000,
+                AsyncTimeout = 1000,
+                SyncTimeout = 1000,
+
+                AbortOnConnectFail = false
+            };
+
         options.InstanceName = "ShooterPlatform:";
     });
 }
@@ -108,9 +119,11 @@ builder.Services.AddScoped<IProfileAnalysisRule, WinRateRule>();
 builder.Services.AddScoped<IProfileAnalysisRule, OneTrickRule>();
 builder.Services.AddScoped<IProfileAnalysisRule, AccuracyRule>();
 builder.Services.AddScoped<IProfileCacheService, ProfileCacheService>();
-builder.Services.AddScoped<IBatchProfileAnalysisService, BatchProfileAnalysisService>();
+builder.Services.AddScoped<IAnalysisResultService, AnalysisResultService>();
+builder.Services.AddScoped<IAnalysisRefreshService, AnalysisRefreshService>();
 
 builder.Services.AddHttpClient<IOverwatchProfileProvider, OverwatchProfileProvider>();
+
 
 // ========================
 // DB
@@ -216,6 +229,27 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 });
 
 var app = builder.Build();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var db = scope.ServiceProvider
+            .GetRequiredService<ShooterPlatformDbContext>();
+
+        db.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider
+            .GetRequiredService<ILogger<Program>>();
+
+        logger.LogError(
+            ex,
+            "Database migration failed.");
+    }
+}
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 

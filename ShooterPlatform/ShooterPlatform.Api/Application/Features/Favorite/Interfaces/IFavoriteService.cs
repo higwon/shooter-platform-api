@@ -7,6 +7,8 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Interfaces
     {
         Task<FavoritePlayer> AddFavoriteAsync(int userId, string battleTag);
 
+        Task RefreshAnalysisAsync(int userId);
+
         Task<List<FavoriteResponse>> GetFavoritesAsync(int userId);
 
         Task DeleteFavoriteAsync(int userId, int favoriteId);
