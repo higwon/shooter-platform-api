@@ -2,7 +2,6 @@
 using ShooterPlatform.Api.Application.Features.Analysis.Models;
 using ShooterPlatform.Api.Application.Features.Auth.Models;
 using ShooterPlatform.Api.Application.Features.Favorite.Models;
-using ShooterPlatform.Api.Application.Features.Players.Models;
 
 namespace ShooterPlatform.Api.Infrastructure
 {
@@ -12,8 +11,6 @@ namespace ShooterPlatform.Api.Infrastructure
             : base(options)
         {
         }
-
-        public DbSet<Player> Players { get; set; }
 
         public DbSet<User> Users { get; set; }
 

@@ -16,9 +16,6 @@ using ShooterPlatform.Api.Application.Features.Favorite.Services;
 using ShooterPlatform.Api.Application.Features.Overwatch.Interfaces;
 using ShooterPlatform.Api.Application.Features.Overwatch.Providers;
 using ShooterPlatform.Api.Application.Features.Overwatch.Services;
-using ShooterPlatform.Api.Application.Features.Players.Interfaces;
-using ShooterPlatform.Api.Application.Features.Players.Services;
-using ShooterPlatform.Api.Application.Features.Players.Validators;
 using ShooterPlatform.Api.Infrastructure;
 using ShooterPlatform.Api.MiddleWares;
 using ShooterPlatform.Api.Options;
@@ -112,7 +109,6 @@ else
 // ========================
 builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<IOverwatchService, OverwatchService>();
 builder.Services.AddScoped<IProfileAnalysisService, ProfileAnalysisService>();
@@ -198,8 +194,6 @@ builder.Services.AddRateLimiter(options =>
 builder.Services
     .AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters();
-
-builder.Services.AddValidatorsFromAssemblyContaining<PlayerQueryRequestValidator>();
 
 // ========================
 // JWT Authentication
