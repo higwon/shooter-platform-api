@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
@@ -121,9 +122,20 @@ builder.Services.AddScoped<IProfileAnalysisRule, AccuracyRule>();
 builder.Services.AddScoped<IProfileCacheService, ProfileCacheService>();
 builder.Services.AddScoped<IAnalysisResultService, AnalysisResultService>();
 builder.Services.AddScoped<IAnalysisRefreshService, AnalysisRefreshService>();
+builder.Services.AddScoped<IAnalysisJobService, AnalysisJobService>();
 
 builder.Services.AddHttpClient<IOverwatchProfileProvider, OverwatchProfileProvider>();
 
+// ========================
+// Hangfire
+// ========================
+builder.Services.AddHangfire(config =>
+{
+    config.UseSqlServerStorage(
+        builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddHangfireServer();
 
 // ========================
 // DB
@@ -230,26 +242,42 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-
+// DB migration
 using (var scope = app.Services.CreateScope())
 {
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
     try
     {
-        var db = scope.ServiceProvider
-            .GetRequiredService<ShooterPlatformDbContext>();
-
+        var db = scope.ServiceProvider.GetRequiredService<ShooterPlatformDbContext>();
         db.Database.Migrate();
     }
     catch (Exception ex)
     {
-        var logger = scope.ServiceProvider
-            .GetRequiredService<ILogger<Program>>();
-
-        logger.LogError(
-            ex,
-            "Database migration failed.");
+        logger.LogError(ex, "Migration failed");
     }
 }
+
+// Hangfire job
+using (var scope = app.Services.CreateScope())
+{
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+
+        recurringJobManager.AddOrUpdate<IAnalysisJobService>(
+            "refresh-analysis",
+            x => x.RefreshAllAsync(),
+            "0 3 * * *");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Hangfire init failed");
+    }
+}
+
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
