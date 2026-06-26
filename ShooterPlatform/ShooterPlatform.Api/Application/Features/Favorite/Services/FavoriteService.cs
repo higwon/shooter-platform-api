@@ -76,18 +76,25 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Services
         public async Task<List<FavoriteResponse>> GetFavoritesAsync(int userId)
         {
             var favorites = await _dbContext.FavoritePlayers
+                .AsNoTracking()
                 .Where(x => x.UserId == userId)
                 .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
 
-            var results = new List<FavoriteResponse>();
+            var battleTags = favorites
+                .Select(x => x.BattleTag)
+                .ToList();
 
-            foreach (var favorite in favorites)
+            var analyses = await _analysisResultService
+                .GetByBattleTagsAsync(battleTags);
+
+            var analysisMap = analyses.ToDictionary(x => x.BattleTag);
+
+            return favorites.Select(favorite =>
             {
-                var analysis = await _analysisResultService
-                    .GetByBattleTagAsync(favorite.BattleTag);
+                analysisMap.TryGetValue(favorite.BattleTag, out var analysis);
 
-                results.Add(new FavoriteResponse
+                return new FavoriteResponse
                 {
                     Id = favorite.Id,
                     BattleTag = favorite.BattleTag,
@@ -98,10 +105,8 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Services
                     RiskScore = analysis?.RiskScore,
                     RiskLevel = analysis?.RiskLevel,
                     AnalyzedAt = analysis?.AnalyzedAt
-                });
-            }
-
-            return results;
+                };
+            }).ToList();
         }
 
         public async Task DeleteFavoriteAsync(
