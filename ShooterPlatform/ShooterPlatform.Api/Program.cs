@@ -1,4 +1,3 @@
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -234,7 +233,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     };
 });
 
+// ========================
+// HealthChecks
+// ========================
+
+builder.Services
+    .AddHealthChecks()
+    .AddDbContextCheck<ShooterPlatformDbContext>();
+
 var app = builder.Build();
+
+app.MapHealthChecks("/health");
 
 // DB migration
 using (var scope = app.Services.CreateScope())
