@@ -66,11 +66,26 @@ namespace ShooterPlatform.Api.Application.Features.Favorite.Services
                 .Select(x => x.BattleTag)
                 .ToListAsync();
 
-            foreach (var battleTag in battleTags)
+            const int maxConcurrency = 5;
+
+            using var semaphore = new SemaphoreSlim(maxConcurrency);
+
+            var tasks = battleTags.Select(async battleTag =>
             {
-                await _analysisRefreshService
-                    .AnalyzeAndSaveAsync(battleTag);
-            }
+                await semaphore.WaitAsync();
+
+                try
+                {
+                    await _analysisRefreshService
+                        .AnalyzeAndSaveAsync(battleTag);
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+
+            await Task.WhenAll(tasks);
         }
 
         public async Task<List<FavoriteResponse>> GetFavoritesAsync(int userId)
