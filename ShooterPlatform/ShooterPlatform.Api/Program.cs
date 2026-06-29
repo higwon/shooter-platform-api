@@ -127,7 +127,13 @@ builder.Services.AddHttpClient<IOverwatchProfileProvider, OverwatchProfileProvid
 builder.Services.AddHangfire(config =>
 {
     config.UseSqlServerStorage(
-        builder.Configuration.GetConnectionString("DefaultConnection"));
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        new Hangfire.SqlServer.SqlServerStorageOptions
+        {
+            PrepareSchemaIfNecessary = false,
+            QueuePollInterval = TimeSpan.FromSeconds(30),
+            SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5)
+        });
 });
 
 builder.Services.AddHangfireServer();
