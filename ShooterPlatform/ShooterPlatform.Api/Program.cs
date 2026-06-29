@@ -124,19 +124,19 @@ builder.Services.AddHttpClient<IOverwatchProfileProvider, OverwatchProfileProvid
 // ========================
 // Hangfire
 // ========================
-builder.Services.AddHangfire(config =>
-{
-    config.UseSqlServerStorage(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new Hangfire.SqlServer.SqlServerStorageOptions
-        {
-            PrepareSchemaIfNecessary = false,
-            QueuePollInterval = TimeSpan.FromSeconds(30),
-            SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5)
-        });
-});
+//builder.Services.AddHangfire(config =>
+//{
+//    config.UseSqlServerStorage(
+//        builder.Configuration.GetConnectionString("DefaultConnection"),
+//        new Hangfire.SqlServer.SqlServerStorageOptions
+//        {
+//            PrepareSchemaIfNecessary = false,
+//            QueuePollInterval = TimeSpan.FromSeconds(30),
+//            SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5)
+//        });
+//});
 
-builder.Services.AddHangfireServer();
+//builder.Services.AddHangfireServer();
 
 // ========================
 // DB
@@ -187,7 +187,7 @@ builder.Services.AddRateLimiter(options =>
 
     options.AddFixedWindowLimiter("auth-limit", opt =>
     {
-        opt.PermitLimit = 5;
+        opt.PermitLimit = 35;
         opt.Window = TimeSpan.FromMinutes(1);
         opt.QueueLimit = 0;
     });
@@ -240,6 +240,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 });
 
 // ========================
+// CORS
+// ========================
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReact", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+// ========================
 // HealthChecks
 // ========================
 
@@ -268,24 +283,24 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Hangfire job
-using (var scope = app.Services.CreateScope())
-{
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+//using (var scope = app.Services.CreateScope())
+//{
+//    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-    try
-    {
-        var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+//    try
+//    {
+//        var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
 
-        recurringJobManager.AddOrUpdate<IAnalysisJobService>(
-            "refresh-analysis",
-            x => x.RefreshAllAsync(),
-            "0 3 * * *");
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "Hangfire init failed");
-    }
-}
+//        recurringJobManager.AddOrUpdate<IAnalysisJobService>(
+//            "refresh-analysis",
+//            x => x.RefreshAllAsync(),
+//            "0 3 * * *");
+//    }
+//    catch (Exception ex)
+//    {
+//        logger.LogError(ex, "Hangfire init failed");
+//    }
+//}
 
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
@@ -294,6 +309,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowReact");
 
 app.UseRateLimiter();
 
